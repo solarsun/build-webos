@@ -55,7 +55,7 @@ WEBOS_LAYER ?= "@webos_layer@"
 
 BBFILES ?= ""
 BBLAYERS ?= " \
-  ${OECORE_LAYER} \
-  ${METAOE_LAYER} \
   ${WEBOS_LAYER} \
-  "
+  ${METAOE_LAYER} \
+  ${OECORE_LAYER} \
+"
