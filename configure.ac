@@ -116,71 +116,28 @@ esac],
 AC_SUBST([privateinternalcomponentmirror], [$enable_privateinternalcomponentmirror])
 AC_MSG_RESULT([$enableval])
 
-# bitbake
-AC_MSG_CHECKING([bitbake])
-m4_define([bitbake_layer_location], ['${PALMDIR}/bitbake'])
-m4_define([bitbake_default_bitbake], ['True'])
-AC_ARG_ENABLE([bitbake], [AS_HELP_STRING([--enable-bitbake],
-		     [configure to include bitbake (default: enabled)])],
+# distro
+AC_MSG_CHECKING([distro])
+m4_define([webos_default_distro], [webos])
+AC_ARG_ENABLE([distro], [AS_HELP_STRING([--enable-distro=DISTRO],
+		     specify distro name (default: "webos_default_distro"))],
 		     [],
-		     [enable_bitbake=bitbake_default_bitbake])
-case "$enable_bitbake" in
-     True|yes) enable_bitbake_layer=bitbake_layer_location ;;
-     *) enable_bitbake_layer='' ;;
-esac
-AC_SUBST([bitbake], $enable_bitbake)
-AC_SUBST([bitbake_layer], $enable_bitbake_layer)
-AC_MSG_RESULT([$bitbake])
+		     [enable_distro="webos_default_distro"])
+AC_SUBST([distro], [$enable_distro])
+AC_MSG_RESULT([$enable_distro])
 
-# oecore
-AC_MSG_CHECKING([oecore])
-m4_define([oecore_layer_location], ['${PALMDIR}/openembedded-core/meta'])
-m4_define([oecore_default_oecore], ['True'])
-AC_ARG_ENABLE([oecore], [AS_HELP_STRING([--enable-oecore],
-		     [configure to include oecore (default: enabled)])],
-		     [enable_oecore=$enableval],
-		     [enable_oecore=oecore_default_oecore])
-case "$enable_oecore" in
-     no) enable_oecore_layer='' ;;
-     *) enable_oecore_layer=oecore_layer_location ;;
-esac
-AC_SUBST([oecore], $enable_oecore)
-AC_SUBST([oecore_layer], $enable_oecore_layer)
-AC_MSG_RESULT([$oecore])
 
-# webos
-AC_MSG_CHECKING([webos])
-m4_define([webos_layer_location], ['${PALMDIR}/meta-webos'])
-m4_define([webos_default_webos], ['True'])
-AC_ARG_ENABLE([webos], [AS_HELP_STRING([--enable-webos],
-		     [configure to include webos (default: enabled)])],
-		     [enable_webos=$enableval],
-		     [enable_webos=webos_default_webos])
-case "$enable_webos" in
-     no) enable_webos_layer='' ;;
-     *) enable_webos_layer=webos_layer_location ;;
-esac
-AC_SUBST([webos], $enable_webos)
-AC_SUBST([webos_layer], $enable_webos_layer)
-AC_MSG_RESULT([$webos])
+# additonallayers
+AC_MSG_CHECKING([additionallayers])
+m4_define([webos_default_additionallayers], ['None'])
+AC_ARG_ENABLE([additionallayers], [AS_HELP_STRING([--enable-additionallayers=path],
+                    [specify path where weboslayers.py file is located (default: 'None')])],
+                    [],
+                    [enable_additionallayers="webos_default_additionallayers"])
+AC_SUBST([additionallayers], [$enable_additionallayrs])
+AC_MSG_RESULT([$enable_additionallayrs])
 
-# metaoe
-AC_MSG_CHECKING([metaoe])
-# IKQ temporary replacing meta-openembedded with meta-oe from openwebos github
-# m4_define([metaoe_layer_location], ['${PALMDIR}/meta-openembedded/meta-oe'])
-m4_define([metaoe_layer_location], ['${PALMDIR}/meta-oe'])
-m4_define([webos_default_metaoe], ['True'])
-AC_ARG_ENABLE([metaoe], [AS_HELP_STRING([--enable-metaoe],
-		     [configure to include metaoe (default: enabled)])],
-		     [enable_metaoe=$enableval],
-		     [enable_metaoe=webos_default_metaoe])
-case "$enable_metaoe" in
-     no) enable_metaoe_layer='' ;;
-     *) enable_metaoe_layer=metaoe_layer_location ;;
-esac
-AC_SUBST([metaoe], $enable_metaoe)
-AC_SUBST([metaoe_layer], $enable_metaoe_layer)
-AC_MSG_RESULT([$metaoe])
+
 
 AC_CONFIG_FILES([Makefile:build-templates/Makefile.in])
 AC_CONFIG_FILES([bitbake.rc:build-templates/bitbake-rc.in])

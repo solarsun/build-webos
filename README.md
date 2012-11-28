@@ -3,24 +3,19 @@ build-webos
 
 Summary
 -------
-Build Open webOS images
+Preview of the new Open WebOS build procedure. 
 
 Description
 -----------
-This repository contains the top level code that aggregates the various [OpenEmbedded](http://openembedded.org) layers into a whole from which Open webOS images can be built. It relies on Git submodules to do this, which are handled transparently only for the initial build.
+This repository contains the top level code that aggregates the various [OpenEmbedded](http://openembedded.org) layers into a whole from which Open webOS images can be built.
 
 Cloning
 =======
-Because this repository uses Git submodules, you must register your SSH key with GitHub in order to clone it. For help on doing this, visit [Generating SSH Keys] (https://help.github.com/articles/generating-ssh-keys). 
+To access Git repositories, you may need to register your SSH key with GitHub. For help on doing this, visit [Generating SSH Keys] (https://help.github.com/articles/generating-ssh-keys). 
 
-Set up build-webos by cloning its Git repository:
+Set up Open WebOS build enviornment, you will need to clone build-webos, the previewbuildscript branch:
 
-     git clone https://github.com/openwebos/build-webos.git
-
-Note: If you populate it by downloading an archive (zip or tar.gz file), then you will get the following error when you run mcf:
-
-     fatal: Not a git repository (or any parent up to mount parent). 
-     Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYTEM not set).
+     git clone -b prebiewbuildscript https://github.com/openwebos/build-webos.git
 
 
 Prerequisites
@@ -30,6 +25,7 @@ Before you can build, you will need some tools.  If you try to build without the
     $ sudo scripts/prerequisites.sh
 
 Also, the bitbake sanity check will issue a warning if you're not running under Ubuntu 11.04 or 12.04.1 LTS, either 32-bit or 64-bit.
+
 
 Building
 ========
@@ -108,7 +104,6 @@ The following images can be built:
 - `webos-image-debug`: Adds various debugging tools to `webos-image`, including gdb and strace. See `openembedded-core/meta/recipes-core/tasks/task-core-tools-debug.bb` for the complete list.
 - `webos-image-test`: Adds various test programs to `webos-image`. See `meta-webos/recipes-core/tasks/task-webos-test.bb` for the complete list.
 
-
 Cleaning
 ========
 To blow away the build artifacts and prepare to do clean build, you can remove the build directory and recreate it by typing:
@@ -132,6 +127,21 @@ To clean a component's build artifacts under BUILD-qemux86, enter:
 To remove the shared state for a component as well as its build artifacts to ensure it gets rebuilt afresh from its source, enter:
  
     $ make cleanall-<component-name>
+
+Adding new layers
+=================
+The script automates the process of adding new OE layers to the build environment.  The information required for integrting new layer are; layer name, OE priority, repository, identification in the form branch, commit or tag ids. It is alsoe possible to reference a layer from local storage area.  The details are documented in the template file build-template/webosadditionallayers.py.
+
+To setup the build environment to include the new layer, the mcf command would look like:
+
+    $ ./mcf [--al | --enable-additonallayers] <path to where script is located> <machine> 
+    
+If a new layer defines alternative distribution name, the mcf command is run with the following options:
+
+    $ ./mcf [-distro | --enable-distro] <distro name> -al <./path> <machine>
+
+Once the build environment is setup, the build procedure will be similar to the one described above.
+
 
 Copyright and License Information
 =================================

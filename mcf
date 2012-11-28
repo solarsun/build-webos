@@ -1,7 +1,4 @@
 #!/usr/bin/python3
-# -*- python -*-
-# Time-stamp: <30-Aug-2012 13:57:37 PDT by rich.pixley@palm.com>
-
 # Copyright (c) 2008 - 2012 Hewlett-Packard Development Company, L.P.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,13 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-##
-# FIXME: I haven't figured out how to do the git submodule stuff using
-# the GitPython library.  The library looks pretty messy, frankly, but
-# I don't see any other plausible alternatives.  So for now I'm just
-# doing shell calls.  Even if I did find a way to use the library,
-# there's an open question of how to get it onto the current machine
-# so that it can be used.
 
 from __future__ import with_statement, print_function, unicode_literals, absolute_import, division
 
@@ -49,18 +39,6 @@ def echo_check_call(todo, verbosity, cwd=None):
                                 shell=True,
                                 cwd=cwd)
 
-def force_submodule(submodule, verbosity, branch='submodule'):
-    global submodules
-
-    if submodule not in submodules:
-        # luckily, these commands are idempotent.
-        echo_check_call('git submodule init {}'.format(submodule), verbosity)
-        echo_check_call('git submodule update {}'.format(submodule), verbosity)
-
-        if branch != 'submodule':
-           echo_check_call('git checkout {}'.format(branch), verbosity, cwd=submodule)
-
-        submodules[submodule] = branch
 
 # Essentially, mcf parses options, creates mcf.status, and runs mcf.status.
 
@@ -79,7 +57,7 @@ def process_file(ifile, ofile, replacements):
     return
 
 def getopts():
-    parser = argparse.ArgumentParser(description='multiple configuration')
+    parser = argparse.ArgumentParser(description='Options')
     
     general = parser.add_argument_group('General Options')
 
@@ -93,11 +71,9 @@ def getopts():
                        action='store_true', default=False,
                        help='work verbosely')
 
-    general.add_argument('-P', '--primary', action='store_true', help='select primary devices')
-    general.add_argument('-S', '--secondary', action='store_true', help='select secondary devices')
     general.add_argument('-x', '--trace', action='store_true', help='trace')
 
-    variations = parser.add_argument_group('Variations on a Theme')
+    variations = parser.add_argument_group('Build Instructions')
 
     variations.add_argument('-p', '--enable-parallel-make', dest='parallel_make', type=int, default=1,
                             help='maximum number of parallel tasks each submake of bitbake should spawn (default: 1)')
@@ -105,34 +81,13 @@ def getopts():
     variations.add_argument('-b', '--enable-bb-number-threads', dest='bb_number_threads', type=int, default=1,
                             help='maximum number of bitbake tasks to spawn (default: 1)')
 
-    partitions = parser.add_argument_group('Source Partitions')
-
-    partitions.add_argument('--disable-bitbake', dest='bitbake', action='store_const', const=False,
-                            default='submodule', help='do not check out bitbake layer (default: False)')
-
-    partitions.add_argument('-B', '--enable-bitbake', dest='bitbake', default='submodule',
-                            help='ref to use for bitbake (default: submodule)')
-
-    partitions.add_argument('-C', '--disable-oecore', dest='oecore', action='store_const', const=False,
-                            default='submodule', help='do not check out openembedded-core layer (default: False)')
-
-    partitions.add_argument('-D', '--enable-oecore', dest='oecore', default='submodule',
-                            help='ref to use for openembedded-core (default: submodule)')
-
-    partitions.add_argument('-U', '--disable-webos', dest='webos', action='store_const', const=False,
-                            default='submodule', help='do not check out meta-webos layer (default: False)')
-
-    partitions.add_argument('-W', '--enable-webos', dest='webos', default='submodule',
-                            help='ref to use for meta-webos (default: submodule)')
-
-    # IKQ temporary replacing meta-openembedded with meta-oe from openwebos github
-    partitions.add_argument('-M', '--disable-metaoe', '--disable-meta-oe', dest='metaoe', action='store_const', const=False,
-                            default='submodule', help='do not check out meta-oe layer (default: False)')
-
-    partitions.add_argument('-N', '--enable-metaoe', '--enable-meta-oe', dest='metaoe', default='submodule',
-                            help = 'ref from which to check out meta-oe (default: submodule)')
+    variations.add_argument('-distro', '--enable-distro', dest='distro', default='webos', help='specify distro name (default: webos)')
     
-    mirrors = parser.add_argument_group('Mirrors and such')
+    partitions = parser.add_argument_group('Source Identification')
+    
+    partitions.add_argument('-al', '--enable-additionallayers', dest='layersconfpath', default='None', help='specify path where weboslayers.py file is located (default: None)', )
+
+    mirrors = parser.add_argument_group('Networking and Mirrors')
 
     network = mirrors.add_mutually_exclusive_group()
 
@@ -172,19 +127,153 @@ def getopts():
 
     return parser.parse_args()
 
+WEBOSLAYERS = []
+LAYERSPRIORITY = {}
+SUBMISSIONS = {} 
+LOCATIONS = {}
+URLS = {}
+PRIORITYORDER = []
+
+def readbaselayers(path):
+   sys.path.insert(0,path)
+   from webosbaselayers import webos_base_layers
+   for p in webos_base_layers:
+        WEBOSLAYERS.append(p[0])
+        PRIORITYORDER.append(p[1])
+        LAYERSPRIORITY[p[0]] = p[1]
+        URLS[p[0]] = p[2]
+        SUBMISSIONS[p[0]] = p[3]
+        LOCATIONS[p[0]] = p[4]
+
+   PRIORITYORDER.sort()
+   PRIORITYORDER.reverse()
+
+def readadditionallayers(path):
+   sys.path.insert(0,path)
+   if not os.path.isfile(os.path.join(path,'webosadditionallayers.py')):
+      print ("Error:" 'Configuration file {} does not exists!'.format(os.path.join(path,'webosadditionallayers.py')))
+      raise ("Error:" 'Configuration file {} does not exists!'.format(os.path.join(path,'webosadditionallayers.py')))
+
+   from webosadditionallayers import webos_additional_layers
+   additonallayers = 0
+   for p in webos_additional_layers:
+        additonallayers = additonallayers + 1
+        WEBOSLAYERS.append(p[0])
+        PRIORITYORDER.append(p[1])
+        LAYERSPRIORITY[p[0]] = p[1]
+        URLS[p[0]] = p[2]
+        SUBMISSIONS[p[0]] = p[3]
+        LOCATIONS[p[0]] = p[4]
+
+   PRIORITYORDER.sort()
+   PRIORITYORDER.reverse()
+
+   return additonallayers
+
+
+def downloadporjects(srcdir,verbosity):
+   for layer in WEBOSLAYERS:
+      if os.path.exists("{0}/{1}".format(srcdir,layer)):
+          print("Note:", 'Git repo {} exits! Skipping download.'.format(layer))
+          continue
+      if not URLS[layer]:
+          if not LOCATIONS[layer]:
+              print("Error:", 'Must define {} git repo or location!'.format(layer))
+              raise("Error:", 'Must define layer git repo or location!')
+          continue
+      if URLS[layer] and LOCATIONS[layer]:
+          print("Error:", 'Both url and location are defined for {} layer!'.format(layer))
+          raise("Error:", 'Both layer url and location are defined!')
+
+      BRANCH = ''
+      COMMIT = ''
+      TAG = ''
+      for vgit in SUBMISSIONS[layer].split(','):
+         if not vgit:
+           continue
+         str1, str2 = vgit.split('=')
+         if str1.lower() == 'commit':
+            if not COMMIT:
+               COMMIT = str2
+         elif str1.lower() == 'branch':
+            BRANCH = str2
+         elif str1.lower() == 'tag':
+            if not COMMIT:
+               COMMIT = str2
+
+      if not BRANCH:
+         BRANCH = 'work_branch'
+      
+      cmd = 'git clone {0}'.format(URLS[layer])
+      if echo_check_call(cmd,True):
+         raise('Error: running {}'.format(cmd))
+
+      cmd = 'cd {0}; git checkout -b {1} {2}'.format(layer, BRANCH, COMMIT)
+      if echo_check_call(cmd,True):
+          raise('Error: running {}'.format(cmd))
+
+
+
+def writebblayersconf(sourcedir, machine):
+    f = open(os.path.join(sourcedir, "BUILD-{0}".format(machine), "conf", "bblayers.conf"), 'a')
+    f.write('\n')
+    xlayer = ""
+    for p in PRIORITYORDER:
+        for layer in LAYERSPRIORITY:
+          if LAYERSPRIORITY[layer] == -1:
+            continue
+          if xlayer != layer:
+            if LAYERSPRIORITY[layer] == p:
+               xlayer = layer
+               leftside = layer
+               leftside = leftside.replace('-','_')
+               leftside = leftside.upper()
+               if layer == "openembedded-core":
+                    str = "{0}_LAYER ?= \"${{PALMDIR}}/{1}/meta\" ".format(leftside, layer)
+               elif not URLS[layer]:
+                    str = "{0}_LAYER ?= \"{1}\" ".format(leftside, LOCATIONS[layer])
+               else:
+                    str = "{0}_LAYER ?= \"${{PALMDIR}}/{1}\"".format(leftside, layer)
+
+               f.write(str)
+               f.write('\n')
+               break
+    f.write('\n')
+    f.write('BBFILES ?= ""\n')
+    f.write('BBLAYERS ?= " \\')
+    f.write('\n')
+    xlayer = ""
+    for p in PRIORITYORDER:
+        for layer in LAYERSPRIORITY:
+          if LAYERSPRIORITY[layer] == -1:
+            continue
+          if xlayer != layer:
+            if LAYERSPRIORITY[layer] == p:
+               xlayer = layer
+               leftside = layer
+               leftside = "{}".format(layer)
+               leftside = leftside.replace('-','_')
+               leftside = leftside.upper()
+               f.write("   ${{{0}_LAYER}} \\".format(leftside))
+               f.write('\n')
+               break
+    f.write('  "')
+    f.write('\n')
+    for layer in LAYERSPRIORITY:
+        if LAYERSPRIORITY[layer] == -1:
+            continue
+        f.write("BBFILE_PRIORITY_{0} = \"{1}\"".format(layer, LAYERSPRIORITY[layer]))
+        f.write('\n')
+    f.close
+
+
+
 if __name__ == '__main__':
    # NB. The exec done by mcf.status causes argv[0] to be an absolute pathname
     progname = sys.argv[0]
 
     options = getopts()
 
-    if options.primary or options.secondary:
-        force_submodule('meta-webos', options.verbose, options.webos)
-        with open(os.path.join(os.path.dirname(progname), 'meta-webos', 'conf', 'devices'), 'r') as f:
-            lines = [l.split() for l in f]
-
-        options.machines.extend([x[0] for x in lines if ((options.primary and (x[1] == 'primary'))
-                                                         or (options.secondary and (x[1] == 'secondary')))])
     if len(options.machines) == 0:
         options.machines += ['qemux86']
         #parser.error('at least one MACHINE argument is required')
@@ -234,10 +323,8 @@ if __name__ == '__main__':
         ['@machines_only@', ' '.join([i.split(':')[0] for i in options.machines])],
         ['@parallel_make@', '{}'.format(options.parallel_make)],
         ['@premirror@', options.premirror],
-        ['@bitbake@', '--enable-bitbake={}'.format(options.bitbake) if options.bitbake else '--disable-bitbake'],
-        ['@oecore@', '--enable-oecore={}'.format(options.oecore) if options.oecore else '--disable-oecore'],
-        ['@metaoe@', '--enable-metaoe={}'.format(options.metaoe) if options.metaoe else '--disable-metaoe'],
-        ['@webos@', '--enable-webos={}'.format(options.webos) if options.webos else '--disable-webos'],
+        ['@distro@', '{}'.format(options.distro)],
+        ['@layersconfpath@', options.layersconfpath],
         ['@network@', '--{}-network'.format('enable' if options.network else 'disable')],
         ['@fetchpremirroronly@', '--{}-fetch-premirror-only'.format('enable' if options.fetchpremirroronly else 'disable')],
         ['@generatemirrortarballs@', '--{}-generate-mirror-tarballs'.format('enable'
@@ -262,10 +349,8 @@ if __name__ == '__main__':
            --enable-bb-number-threads=@bb_number_threads@ \
            --enable-parallel-make=@parallel_make@ \
            --enable-premirror=@premirror@ \
-           @bitbake@ \
-           @oecore@ \
-           @webos@ \
-           @metaoe@ \
+           --enable-distro=@distro@ \
+           @layersconfpath@ \
            @network@ \
            @fetchpremirroronly@ \
            @privateinternalcomponentmirror@ \
@@ -278,17 +363,10 @@ if __name__ == '__main__':
 
         echo_check_call(cmd, options.verbose)
 
-        if options.bitbake:
-            force_submodule('bitbake', options.verbose, options.bitbake)
-
-        if options.oecore:
-            force_submodule('openembedded-core', options.verbose, options.oecore)
-
-        # IKQ temporary replacing meta-openembedded with meta-oe from openwebos github
-        if options.metaoe:
-            force_submodule('meta-oe', options.verbose, branch=options.metaoe)
-
-        if options.webos:
-            force_submodule('meta-webos', options.verbose, branch=options.webos)
+        readbaselayers('{}/scripts'.format(srcdir))
+        if not options.layersconfpath == 'None':
+            readadditionallayers(options.layersconfpath)
+        downloadporjects(srcdir,True)
+        writebblayersconf(srcdir, machine)
 
         logger.info('Done.\n')

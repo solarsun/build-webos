@@ -49,13 +49,3 @@ BBPATH = "${PALMDIR}:${TMPDIR}"
 include ${HOME}/webos-global.conf
 include ${PALMDIR}/webos-local.conf
 
-OECORE_LAYER ?= "@oecore_layer@"
-METAOE_LAYER ?= "@metaoe_layer@"
-WEBOS_LAYER ?= "@webos_layer@"
-
-BBFILES ?= ""
-BBLAYERS ?= " \
-  ${WEBOS_LAYER} \
-  ${METAOE_LAYER} \
-  ${OECORE_LAYER} \
-"
