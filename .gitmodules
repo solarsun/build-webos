@@ -1,12 +1,12 @@
 [submodule "bitbake"]
 	path = bitbake
-	url = git://git.openembedded.org/bitbake
+	url = git://github.com/openembedded/bitbake.git
 [submodule "openembedded-core"]
 	path = openembedded-core
-	url = git://git.openembedded.org/openembedded-core.git
+	url = git://github.com/openembedded/oe-core.git
 [submodule "meta-openembedded"]
 	path = meta-openembedded
-	url = git://git.openembedded.org/meta-openembedded
+	url = git://github.com/openembedded/meta-oe.git
 [submodule "meta-oe"]
 	path = meta-oe
 	url = git@github.com:openwebos/meta-oe.git
