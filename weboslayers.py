@@ -14,53 +14,46 @@
 #
 # Documentation:
 #
-# This implementation introduces the next generation build environment
+# This implementation introduces next generation build environment
 # for OpenWebos. The change introduces a mechanism to add additional
-# layers to the base, meta-webos, meta-oe and openembedded-core.
+# layers to the base ones, meta-webos, meta-oe and openembedded-core.
 # The new layers contribute to the image content of WebOS.
 #
-# The base layers are defined in webosbaselayers.py file located in 
-# the scripts directory.  A separate file, webosadditionallayers.py,
-# is used to define the additional layers.  The additional layers file 
-# can be located anywhere, however a template is provided in build-templates 
-# directory.  Using separate configuration files provides a mechanism to 
-# track the base layers independently.
+# The base layers are defined in weboslayers.py file located in 
+# the build directory, i.e build-webos.  Additional layers can
+# be added to the same file.
 #
-# The files format uses python data structures to define the following:
+# weboslayers.py file format uses python data structures to define 
+# the following:
 #
 # ('layer-name', integer-priority, 'URL', 'submission', 'working-dir')
 #
-# layers name = unique identifier, usually identical to repo name on github.
+# layers name = uniqe identifier, usually identical to repo name on github.
 # priority    = layer priority as defined by Openembedded. Larger numbers
-#               have higher priority. A value of '-1' indicates a non-layer
-#               content, such as bitbake
+#               have higher priority.
 # URL         = The git repo address for the layer, on the web. A value of ''
 #               skips the download.
 # submission  = Is the git information to download and identify the precise
-#               content.  Submission values could be "branch=<name>" and 
-#               "commit=<id>" or "tag=<label>". Omitted branch information
+#               content.  Submssion values could be "branch=<name>" and 
+#               "commmit=<id>" or "tag=<label>". Omitted branch information
 #               means master. Omitted commit or tag means tip of branch.
 # working-dir = Alternative project directory for the git repo.
 #
 # The priority in this file overrides those specified in conf/layer.conf
 # for each layer.
 #
-# The mcf scripts will always read the base layers from webosbaselayers.py file.
-# On the other hand, webosadditionallayers.py is optional. It is needed only when
-# additional layers are defined.
+# The mcf scripts will always read webosbaselayers.py to read the base layers.
+# On the other hand, webosadditionallayers.py is optional is needed only when
+# additional layers are needed.
 #
-# exmaple:
-# ./mcf -p 4 -b 5 -distro newdistro -al .  machinename
+# In additon to layers, the distribution name is also defined in this file as well.
 #
-# To build Open WebOS, just issue a command similar to:
-# ./mcf -p 4 -b 5 machinename
-#
-#
-webos_base_layers = [
+Distribution = "webos"
+
+webos_layers = [
 ('bitbake',          -1, 'git://git.openembedded.org/bitbake',               'branch=1.14,commit=53e6b630f', '' ),
 ('openembedded-core', 5, 'git://git.openembedded.org/openembedded-core.git', 'branch=denzil,commit=1b40dac', ''  ),
 #('meta-openembedded', 6, 'git://git.openembedded.org/meta-openembedded',     'branch=denzil,commit=aa4f437', ''  ),
 ('meta-oe',           6, 'git@github.com:openwebos/meta-oe.git' ,            'commit=c68caf3', ''),
-('meta-webos',       10, 'git@github.com:openwebos/meta-webos.git',          'commit=7dd7120', ''),
+('meta-webos',       10, 'git@github.com:openwebos/meta-webos.git',          'commit=ca16c51', ''),
 ]
-

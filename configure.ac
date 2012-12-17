@@ -126,19 +126,6 @@ AC_ARG_ENABLE([distro], [AS_HELP_STRING([--enable-distro=DISTRO],
 AC_SUBST([distro], [$enable_distro])
 AC_MSG_RESULT([$enable_distro])
 
-
-# additonallayers
-AC_MSG_CHECKING([additionallayers])
-m4_define([webos_default_additionallayers], ['None'])
-AC_ARG_ENABLE([additionallayers], [AS_HELP_STRING([--enable-additionallayers=path],
-                    [specify path where weboslayers.py file is located (default: 'None')])],
-                    [],
-                    [enable_additionallayers="webos_default_additionallayers"])
-AC_SUBST([additionallayers], [$enable_additionallayrs])
-AC_MSG_RESULT([$enable_additionallayrs])
-
-
-
 AC_CONFIG_FILES([Makefile:build-templates/Makefile.in])
 AC_CONFIG_FILES([bitbake.rc:build-templates/bitbake-rc.in])
 AC_CONFIG_FILES([conf/bblayers.conf:build-templates/bblayers-conf.in])

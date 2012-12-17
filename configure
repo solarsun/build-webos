@@ -558,7 +558,6 @@ PACKAGE_URL=''
 ac_unique_file="build-templates/mcf-status.in"
 ac_subst_vars='LTLIBOBJS
 LIBOBJS
-additionallayers
 distro
 privateinternalcomponentmirror
 generatemirrortarballs
@@ -618,7 +617,6 @@ enable_fetch_premirror_only
 enable_generate_mirror_tarballs
 enable_private_internal_component_mirror
 enable_distro
-enable_additionallayers
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1252,9 +1250,6 @@ Optional Features:
                           enable private internal component mirror (default:
                           "False")
   --enable-distro=DISTRO  specify distro name (default: "webos")
-  --enable-additionallayers=path
-                          specify path where weboslayers.py file is located
-                          (default: 'None')
 
 Report bugs to the package provider.
 _ACEOF
@@ -1848,25 +1843,6 @@ distro=$enable_distro
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $enable_distro" >&5
 $as_echo "$enable_distro" >&6; }
-
-
-# additonallayers
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking additionallayers" >&5
-$as_echo_n "checking additionallayers... " >&6; }
-
-# Check whether --enable-additionallayers was given.
-if test "${enable_additionallayers+set}" = set; then :
-  enableval=$enable_additionallayers;
-else
-  enable_additionallayers="'None'"
-fi
-
-additionallayers=$enable_additionallayrs
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $enable_additionallayrs" >&5
-$as_echo "$enable_additionallayrs" >&6; }
-
-
 
 ac_config_files="$ac_config_files Makefile:build-templates/Makefile.in"
 

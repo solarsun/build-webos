@@ -82,10 +82,8 @@ def getopts():
                             help='maximum number of bitbake tasks to spawn (default: 1)')
 
     variations.add_argument('-distro', '--enable-distro', dest='distro', default='webos', help='specify distro name (default: webos)')
-    
+
     partitions = parser.add_argument_group('Source Identification')
-    
-    partitions.add_argument('-al', '--enable-additionallayers', dest='layersconfpath', default='None', help='specify path where weboslayers.py file is located (default: None)', )
 
     mirrors = parser.add_argument_group('Networking and Mirrors')
 
@@ -134,30 +132,16 @@ LOCATIONS = {}
 URLS = {}
 PRIORITYORDER = []
 
-def readbaselayers(path):
+def readlayers(path):
    sys.path.insert(0,path)
-   from webosbaselayers import webos_base_layers
-   for p in webos_base_layers:
-        WEBOSLAYERS.append(p[0])
-        PRIORITYORDER.append(p[1])
-        LAYERSPRIORITY[p[0]] = p[1]
-        URLS[p[0]] = p[2]
-        SUBMISSIONS[p[0]] = p[3]
-        LOCATIONS[p[0]] = p[4]
-
-   PRIORITYORDER.sort()
-   PRIORITYORDER.reverse()
-
-def readadditionallayers(path):
-   sys.path.insert(0,path)
-   if not os.path.isfile(os.path.join(path,'webosadditionallayers.py')):
+   if not os.path.isfile(os.path.join(path,'weboslayers.py')):
       print ("Error:" 'Configuration file {} does not exists!'.format(os.path.join(path,'webosadditionallayers.py')))
       raise ("Error:" 'Configuration file {} does not exists!'.format(os.path.join(path,'webosadditionallayers.py')))
 
-   from webosadditionallayers import webos_additional_layers
-   additonallayers = 0
-   for p in webos_additional_layers:
-        additonallayers = additonallayers + 1
+   from weboslayers import webos_layers
+   layerscount = 0
+   for p in webos_layers:
+        layerscount = layerscount + 1
         WEBOSLAYERS.append(p[0])
         PRIORITYORDER.append(p[1])
         LAYERSPRIORITY[p[0]] = p[1]
@@ -168,7 +152,18 @@ def readadditionallayers(path):
    PRIORITYORDER.sort()
    PRIORITYORDER.reverse()
 
-   return additonallayers
+   return layerscount
+
+
+def readdistro(path):
+   sys.path.insert(0,path)
+   if not os.path.isfile(os.path.join(path,'weboslayers.py')):
+      print ("Error:" 'Configuration file {} does not exists!'.format(os.path.join(path,'webosadditionallayers.py')))
+      raise ("Error:" 'Configuration file {} does not exists!'.format(os.path.join(path,'webosadditionallayers.py')))
+
+   from weboslayers import Distribution
+
+   return Distribution
 
 
 def downloadporjects(srcdir,verbosity):
@@ -323,8 +318,7 @@ if __name__ == '__main__':
         ['@machines_only@', ' '.join([i.split(':')[0] for i in options.machines])],
         ['@parallel_make@', '{}'.format(options.parallel_make)],
         ['@premirror@', options.premirror],
-        ['@distro@', '{}'.format(options.distro)],
-        ['@layersconfpath@', options.layersconfpath],
+        ['@distro@', '{}'.format(readdistro(srcdir))],
         ['@network@', '--{}-network'.format('enable' if options.network else 'disable')],
         ['@fetchpremirroronly@', '--{}-fetch-premirror-only'.format('enable' if options.fetchpremirroronly else 'disable')],
         ['@generatemirrortarballs@', '--{}-generate-mirror-tarballs'.format('enable'
@@ -350,7 +344,6 @@ if __name__ == '__main__':
            --enable-parallel-make=@parallel_make@ \
            --enable-premirror=@premirror@ \
            --enable-distro=@distro@ \
-           @layersconfpath@ \
            @network@ \
            @fetchpremirroronly@ \
            @privateinternalcomponentmirror@ \
@@ -363,9 +356,7 @@ if __name__ == '__main__':
 
         echo_check_call(cmd, options.verbose)
 
-        readbaselayers('{}/scripts'.format(srcdir))
-        if not options.layersconfpath == 'None':
-            readadditionallayers(options.layersconfpath)
+        readlayers(srcdir)
         downloadporjects(srcdir,True)
         writebblayersconf(srcdir, machine)
 

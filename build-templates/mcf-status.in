@@ -30,8 +30,6 @@ exec @prog@ -v \
     --enable-bb-number-threads=@bb_number_threads@ \
     --enable-parallel-make=@parallel_make@ \
     --enable-premirror=@premirror@ \
-    --enable-distro=@distro@ \
-    --enable-additionallayers=@layersconfpath@ \
     @network@ \
     @fetchpremirroronly@ \
     @generatemirrortarballs@ \

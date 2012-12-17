@@ -3,6 +3,7 @@
 # Common Eclipse project files
 .project
 .cproject
+.pc
 
 # Build Products
 *~
@@ -19,3 +20,8 @@ tmp
 # Local override file
 webos-local.conf
 __pycache__/
+patches
+bitbake
+meta-oe
+meta-webos
+openembedded-core
