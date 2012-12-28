@@ -12,16 +12,19 @@ Makefile
 TAGS
 autom4te.cache
 bitbake.lock
-downloads/
+downloads
 mcf.status
 sstate-cache/
 tmp
-
-# Local override file
-webos-local.conf
-__pycache__/
 patches
 bitbake
 meta-oe
 meta-webos
 oe-core
+buildhistory
+
+
+# Local override file
+webos-local.conf
+__pycache__/
+

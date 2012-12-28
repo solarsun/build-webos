@@ -119,7 +119,16 @@ def getopts():
     private.add_argument('--enable-private-internal-component-mirror', dest='privateinternalcomponentmirror', action='store_true',
                       default=False, help='enable the private internal component mirror (default: disabled)')
 
+    buildhistory = parser.add_argument_group('Buildhistory')
 
+    buildhistory1 = buildhistory.add_mutually_exclusive_group()
+
+    buildhistory1.add_argument('--disable-buildhistory', dest='buildhistory', action='store_false', default=True,
+                              help='disable buildhistory functionality (default: False)')
+
+    buildhistory1.add_argument('--enable-buildhistory', dest='buildhistory', action='store_true', default=True,
+                              help='enable buildhistory functionality (default: True)')
+    
     parser.add_argument('machines', nargs='*')
 
     return parser.parse_args()
@@ -360,6 +369,7 @@ if __name__ == '__main__':
         ['@parallel_make@', '{}'.format(options.parallel_make)],
         ['@premirror@', options.premirror],
         ['@distro@', '{}'.format(readdistro(srcdir))],
+        ['@buildhistory@', '--{}-buildhistory'.format('enable' if options.buildhistory else 'disable')],
         ['@network@', '--{}-network'.format('enable' if options.network else 'disable')],
         ['@fetchpremirroronly@', '--{}-fetch-premirror-only'.format('enable' if options.fetchpremirroronly else 'disable')],
         ['@generatemirrortarballs@', '--{}-generate-mirror-tarballs'.format('enable'
@@ -385,6 +395,7 @@ if __name__ == '__main__':
            --enable-parallel-make=@parallel_make@ \
            --enable-premirror=@premirror@ \
            --enable-distro=@distro@ \
+           @buildhistory@ \
            @network@ \
            @fetchpremirroronly@ \
            @privateinternalcomponentmirror@ \

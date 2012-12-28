@@ -126,6 +126,19 @@ AC_ARG_ENABLE([distro], [AS_HELP_STRING([--enable-distro=DISTRO],
 AC_SUBST([distro], [$enable_distro])
 AC_MSG_RESULT([$enable_distro])
 
+# buildhistory
+AC_MSG_CHECKING([buildhistory])
+AC_ARG_ENABLE([buildhistory], [AS_HELP_STRING([--enable-buildhistory],
+		     enable buildhistory to check that versions are not going backward and content of images (default: "True"))],
+		     [case "$enableval" in
+yes) enable_buildhistory="1"; class_buildhistory="buildhistory" ;;
+no) enable_buildhistory="0"; class_buildhistory="" ;;
+esac],
+		     [enable_buidhistory="1", class_buildhistory="buildhistory"])
+AC_SUBST([buildhistory_enabled], [$enable_buildhistory])
+AC_SUBST([buildhistory_class], [$class_buildhistory])
+AC_MSG_RESULT([$enable_buildhistory])
+
 AC_CONFIG_FILES([Makefile:build-templates/Makefile.in])
 AC_CONFIG_FILES([bitbake.rc:build-templates/bitbake-rc.in])
 AC_CONFIG_FILES([conf/bblayers.conf:build-templates/bblayers-conf.in])
