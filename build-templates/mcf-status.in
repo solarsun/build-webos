@@ -34,6 +34,7 @@ exec @prog@ -v \
     @oecore@ \
     @webos@ \
     @metaoe@ \
+    @buildhistory@ \
     @network@ \
     @fetchpremirroronly@ \
     @generatemirrortarballs@ \

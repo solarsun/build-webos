@@ -566,6 +566,8 @@ PACKAGE_URL=''
 ac_unique_file="build-templates/mcf-status.in"
 ac_subst_vars='LTLIBOBJS
 LIBOBJS
+buildhistory_class
+buildhistory_enabled
 metaoe_layer
 metaoe
 webos_layer
@@ -635,6 +637,7 @@ enable_bitbake
 enable_oecore
 enable_webos
 enable_metaoe
+enable_buildhistory
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1271,6 +1274,9 @@ Optional Features:
   --enable-oecore         configure to include oecore (default: enabled)
   --enable-webos          configure to include webos (default: enabled)
   --enable-metaoe         configure to include metaoe (default: enabled)
+  --enable-buildhistory   enable buildhistory to check that versions are not
+                          going backward and content of images (default:
+                          "True")
 
 Report bugs to the package provider.
 _ACEOF
@@ -1940,6 +1946,26 @@ metaoe_layer=$enable_metaoe_layer
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $metaoe" >&5
 $as_echo "$metaoe" >&6; }
+
+# buildhistory
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking buildhistory" >&5
+$as_echo_n "checking buildhistory... " >&6; }
+# Check whether --enable-buildhistory was given.
+if test "${enable_buildhistory+set}" = set; then :
+  enableval=$enable_buildhistory; case "$enableval" in
+yes) enable_buildhistory="1"; class_buildhistory="buildhistory" ;;
+no) enable_buildhistory="0"; class_buildhistory="" ;;
+esac
+else
+  enable_buidhistory="1", class_buildhistory="buildhistory"
+fi
+
+buildhistory_enabled=$enable_buildhistory
+
+buildhistory_class=$class_buildhistory
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $enable_buildhistory" >&5
+$as_echo "$enable_buildhistory" >&6; }
 
 ac_config_files="$ac_config_files Makefile:build-templates/Makefile.in"
 

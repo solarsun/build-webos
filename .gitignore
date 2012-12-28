@@ -15,6 +15,7 @@ downloads/
 mcf.status
 sstate-cache/
 tmp
+buildhistory
 
 # Local override file
 webos-local.conf
