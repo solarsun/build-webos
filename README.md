@@ -101,7 +101,7 @@ Images
 The following images can be built: 
 
 - `webos-image`: The production Open webOS image.
-- `webos-image-debug`: Adds various debugging tools to `webos-image`, including gdb and strace. See `openembedded-core/meta/recipes-core/tasks/task-core-tools-debug.bb` for the complete list.
+- `webos-image-debug`: Adds various debugging tools to `webos-image`, including gdb and strace. See `oe-core/meta/recipes-core/tasks/task-core-tools-debug.bb` for the complete list.
 - `webos-image-test`: Adds various test programs to `webos-image`. See `meta-webos/recipes-core/tasks/task-webos-test.bb` for the complete list.
 
 Cleaning

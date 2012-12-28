@@ -28,7 +28,7 @@ export PALMDIR=@abs_srcdir@
 BITBAKEPATH=${PALMDIR}/bitbake/bin
 case "${PATH}" in
 *${BITBAKEPATH}*) ;;
-*) export PATH=${PALMDIR}/openembedded-core/scripts:${BITBAKEPATH}:$PATH ;;
+*) export PATH=${PALMDIR}/oe-core/scripts:${BITBAKEPATH}:$PATH ;;
 esac
 
 # used by runqemu

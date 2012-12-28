@@ -16,7 +16,7 @@
 #
 # This implementation introduces next generation build environment
 # for OpenWebos. The change introduces a mechanism to add additional
-# layers to the base ones, meta-webos, meta-oe and openembedded-core.
+# layers to the base ones, meta-webos, meta-oe and oe-core.
 # The new layers contribute to the image content of WebOS.
 #
 # The base layers are defined in weboslayers.py file located in 
@@ -50,11 +50,12 @@
 #
 Distribution = "webos"
 
-
+# github.com/openembedded repositories are read-only mirrors 
+# of authoritative repositories on git.openembedded.org
 webos_layers = [
-('bitbake',          -1, 'git://git.openembedded.org/bitbake',               'branch=1.14,commit=53e6b630f', '' ),
-('meta',              5, 'git://git.openembedded.org/openembedded-core.git', 'branch=denzil,commit=1b40dac', ''  ),
-#('meta-oe',           6, 'git://git.openembedded.org/meta-openembedded',     'branch=denzil,commit=aa4f437', ''  ),
+('bitbake',          -1, 'git://github.com/openembedded/bitbake.git',        'branch=1.14,commit=53e6b630f', ''  ),
+('meta',              5, 'git://github.com/openembedded/oe-core.git',        'branch=denzil,commit=1b40dac', ''  ),
+#('meta-oe',           6, 'git://github.com/openembedded/meta-oe.git',        'branch=denzil,commit=aa4f437', ''  ),
 ('meta-oe',           6, 'git@github.com:openwebos/meta-oe.git' ,            'commit=c68caf3', ''),
 ('meta-webos',       10, 'git@github.com:openwebos/meta-webos.git',          'commit=ca16c51', ''),
 #('meta-name',        15, '',  '', '/home/userid/meta-name'),

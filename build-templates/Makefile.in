@@ -22,7 +22,7 @@ vpath := $(srcdir)
 srcdir := @abs_srcdir@
 abs_builddir := @abs_builddir@
 
-oecdir := $(srcdir)/openembedded-core
+oecdir := $(srcdir)/oe-core
 oecscripts := $(oecdir)/scripts
 
 # should be set on the command line before using "make install"

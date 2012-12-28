@@ -17,7 +17,7 @@
 set -x
 
 rm -f TAGS
-find BUILD-*/conf openembedded-core meta-openembedded meta-webos \
+find BUILD-*/conf oe-core meta-oe meta-webos \
     \( -name \*.bb -o -name \*.conf -o -name \*.inc -o -name \*.bbclass \) \
     -print \
     | xargs etags -a
