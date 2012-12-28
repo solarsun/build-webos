@@ -34,6 +34,7 @@ exec @prog@ -v \
     @webos@ \
     @metaoe@ \
     @buildhistory@ \
+    --enable-buildhistoryauthor='@buildhistoryauthor@' \
     @network@ \
     @fetchpremirroronly@ \
     @generatemirrortarballs@ \

@@ -166,6 +166,8 @@ EXTRA_IMAGE_FEATURES = "debug-tweaks"
 USER_CLASSES ?= "@buildhistory_class@ buildstats image-mklibs image-prelink"
 
 BUILDHISTORY_DIR = "${TOPDIR}/buildhistory"
+BUILDHISTORY_COMMIT ?= "@buildhistory_enabled@"
+@buildhistory_author_assignment@
 
 #
 # Runtime testing of images
