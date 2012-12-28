@@ -82,8 +82,6 @@ def getopts():
     variations.add_argument('-b', '--enable-bb-number-threads', dest='bb_number_threads', type=int, default=1,
                             help='maximum number of bitbake tasks to spawn (default: 1)')
 
-    variations.add_argument('-distro', '--enable-distro', dest='distro', default='webos', help='specify distro name (default: webos)')
-
     partitions = parser.add_argument_group('Source Identification')
 
     mirrors = parser.add_argument_group('Networking and Mirrors')
