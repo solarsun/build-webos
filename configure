@@ -566,6 +566,8 @@ PACKAGE_URL=''
 ac_unique_file="build-templates/mcf-status.in"
 ac_subst_vars='LTLIBOBJS
 LIBOBJS
+buildhistory_author_assignment
+buildhistory_author
 buildhistory_class
 buildhistory_enabled
 distro
@@ -631,6 +633,7 @@ enable_generate_mirror_tarballs
 enable_private_internal_component_mirror
 enable_distro
 enable_buildhistory
+enable_buildhistoryauthor
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1270,6 +1273,10 @@ Optional Features:
   --enable-buildhistory   enable buildhistory to check that versions are not
                           going backward and content of images (default:
                           "True")
+  --enable-buildhistoryauthor="webos builder webos@builder.org"
+                          specify author to use in buildhistory git commits
+                          (default: none, will use author from git global
+                          config)
 
 Report bugs to the package provider.
 _ACEOF
@@ -1922,6 +1929,27 @@ buildhistory_class=$class_buildhistory
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $enable_buildhistory" >&5
 $as_echo "$enable_buildhistory" >&6; }
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking buildhistoryauthor" >&5
+$as_echo_n "checking buildhistoryauthor... " >&6; }
+# Check whether --enable-buildhistoryauthor was given.
+if test "${enable_buildhistoryauthor+set}" = set; then :
+  enableval=$enable_buildhistoryauthor; if test -z "$enableval"; then
+                         enable_buildhistoryauthor_assignment=""
+                      else
+                         enable_buildhistoryauthor_assignment="BUILDHISTORY_COMMIT_AUTHOR ?= \"$enableval\""
+                      fi
+
+else
+  enable_buildhistoryauthor_assignment=""
+fi
+
+buildhistory_author=$enable_buildhistoryauthor
+
+buildhistory_author_assignment=$enable_buildhistoryauthor_assignment
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $enable_buildhistoryauthor" >&5
+$as_echo "$enable_buildhistoryauthor" >&6; }
 
 ac_config_files="$ac_config_files Makefile:build-templates/Makefile.in"
 

@@ -30,6 +30,7 @@ exec @prog@ -v \
     --premirror=@premirror@ \
     --sstatemirror=@sstatemirror@ \
     @buildhistory@ \
+    --enable-buildhistoryauthor='@buildhistoryauthor@' \
     @network@ \
     @fetchpremirroronly@ \
     @generatemirrortarballs@ \

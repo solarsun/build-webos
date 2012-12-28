@@ -140,6 +140,8 @@ def getopts():
     buildhistory1.add_argument('--enable-buildhistory', dest='buildhistory', action='store_true', default=True,
                               help='enable buildhistory functionality (default: True)')
     
+    buildhistory.add_argument('--enable-buildhistoryauthor', dest='buildhistoryauthor', default='', help='specify name and email used in buildhistory git commits (default: none, will use author from git global config)')
+    
     parser.add_argument('machines', nargs='*')
 
     return parser.parse_args()
@@ -382,6 +384,7 @@ if __name__ == '__main__':
         ['@sstatemirror@', '"{}"'.format(' '.join(options.sstatemirror) if options.sstatemirror else '')],
         ['@distro@', '{}'.format(readdistro(srcdir))],
         ['@buildhistory@', '--{}-buildhistory'.format('enable' if options.buildhistory else 'disable')],
+        ['@buildhistoryauthor@', options.buildhistoryauthor],
         ['@network@', '--{}-network'.format('enable' if options.network else 'disable')],
         ['@fetchpremirroronly@', '--{}-fetch-premirror-only'.format('enable' if options.fetchpremirroronly else 'disable')],
         ['@generatemirrortarballs@', '--{}-generate-mirror-tarballs'.format('enable'
@@ -409,6 +412,7 @@ if __name__ == '__main__':
            --enable-sstatemirror=@sstatemirror@ \
            --enable-distro=@distro@ \
            @buildhistory@ \
+           --enable-buildhistoryauthor="@buildhistoryauthor@" \
            @network@ \
            @fetchpremirroronly@ \
            @privateinternalcomponentmirror@ \

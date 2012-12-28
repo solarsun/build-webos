@@ -171,6 +171,20 @@ AC_SUBST([buildhistory_enabled], [$enable_buildhistory])
 AC_SUBST([buildhistory_class], [$class_buildhistory])
 AC_MSG_RESULT([$enable_buildhistory])
 
+AC_MSG_CHECKING([buildhistoryauthor])
+AC_ARG_ENABLE([buildhistoryauthor], [AS_HELP_STRING([--enable-buildhistoryauthor="webos builder webos@builder.org"],
+                     specify author to use in buildhistory git commits (default: none, will use author from git global config))],
+                     [if test -z "$enableval"; then
+                         enable_buildhistoryauthor_assignment=""
+                      else
+                         enable_buildhistoryauthor_assignment="BUILDHISTORY_COMMIT_AUTHOR ?= \"$enableval\""
+                      fi
+                     ],
+                     [enable_buildhistoryauthor_assignment=""])
+AC_SUBST([buildhistory_author], [$enable_buildhistoryauthor])
+AC_SUBST([buildhistory_author_assignment], [$enable_buildhistoryauthor_assignment])
+AC_MSG_RESULT([$enable_buildhistoryauthor])
+
 AC_CONFIG_FILES([Makefile:build-templates/Makefile.in])
 AC_CONFIG_FILES([bitbake.rc:build-templates/bitbake-rc.in])
 AC_CONFIG_FILES([conf/bblayers.conf:build-templates/bblayers-conf.in])
