@@ -28,32 +28,34 @@
 #
 # ('layer-name', integer-priority, 'URL', 'submission', 'working-dir')
 #
-# layers name = uniqe identifier, usually identical to repo name on github.
+# layers name = uniqe identifier, It represents the layer directoy containing
+#               conf/layer.conf.
 # priority    = layer priority as defined by Openembedded. Larger numbers
-#               have higher priority.
-# URL         = The git repo address for the layer, on the web. A value of ''
+#               have higher priority. A value of -1 indicates that the content
+#               is not a layer, for example the bitbake directory.
+# URL         = The git repo address for the layer on the web. A value of ''
 #               skips the download.
 # submission  = Is the git information to download and identify the precise
 #               content.  Submssion values could be "branch=<name>" and 
 #               "commmit=<id>" or "tag=<label>". Omitted branch information
 #               means master. Omitted commit or tag means tip of branch.
-# working-dir = Alternative project directory for the git repo.
+# working-dir = Alternative project directory for the layer.
 #
 # The priority in this file overrides those specified in conf/layer.conf
-# for each layer.
-#
-# The mcf scripts will always read webosbaselayers.py to read the base layers.
-# On the other hand, webosadditionallayers.py is optional is needed only when
-# additional layers are needed.
+# for each layer. Excptions are oe-core and meta-oe, where they are present 
+# to control downloading of particular version of these layers, the layer priority
+# for these two layers must not be changed 
 #
 # In additon to layers, the distribution name is also defined in this file as well.
 #
 Distribution = "webos"
 
+
 webos_layers = [
 ('bitbake',          -1, 'git://git.openembedded.org/bitbake',               'branch=1.14,commit=53e6b630f', '' ),
-('openembedded-core', 5, 'git://git.openembedded.org/openembedded-core.git', 'branch=denzil,commit=1b40dac', ''  ),
-#('meta-openembedded', 6, 'git://git.openembedded.org/meta-openembedded',     'branch=denzil,commit=aa4f437', ''  ),
-('meta-oe',           6, 'git@github.com:openwebos/meta-oe.git' ,            'commit=c68caf3', ''),
+('meta',              5, 'git://git.openembedded.org/openembedded-core.git', 'branch=denzil,commit=1b40dac', ''  ),
+('meta-oe',           6, 'git://git.openembedded.org/meta-openembedded',     'branch=denzil,commit=aa4f437', ''  ),
+#('meta-oe',          6, 'git@github.com:openwebos/meta-oe.git' ,            'commit=c68caf3', ''),
 ('meta-webos',       10, 'git@github.com:openwebos/meta-webos.git',          'commit=ca16c51', ''),
+#('meta-name',       15, '',  '', '/home/userid/meta-name'),
 ]

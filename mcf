@@ -22,6 +22,7 @@ import logging
 import os
 import subprocess
 import sys
+import re
 
 logger = logging.getLogger(__name__)
 
@@ -131,6 +132,13 @@ SUBMISSIONS = {}
 LOCATIONS = {}
 URLS = {}
 PRIORITYORDER = []
+COLLECTION_NAME = {}
+COLLECTION_PATH = {}
+DIRNAME = {}
+
+def location_to_dirname(layer, location):
+   str1 = location.split('/')
+   DIRNAME[layer] = os.path.splitext(str1[len(str1)-1])[0]
 
 def readlayers(path):
    sys.path.insert(0,path)
@@ -148,12 +156,15 @@ def readlayers(path):
         URLS[p[0]] = p[2]
         SUBMISSIONS[p[0]] = p[3]
         LOCATIONS[p[0]] = p[4]
+        if URLS[p[0]]:
+           location_to_dirname(p[0], URLS[p[0]])
+        if LOCATIONS[p[0]]:
+           location_to_dirname(p[0], LOCATIONS[p[0]])
 
    PRIORITYORDER.sort()
    PRIORITYORDER.reverse()
 
    return layerscount
-
 
 def readdistro(path):
    sys.path.insert(0,path)
@@ -162,23 +173,21 @@ def readdistro(path):
       raise ("Error:" 'Configuration file {} does not exists!'.format(os.path.join(path,'webosadditionallayers.py')))
 
    from weboslayers import Distribution
-
    return Distribution
 
-
-def downloadporjects(srcdir,verbosity):
+def downloadprojects(srcdir,verbosity):
    for layer in WEBOSLAYERS:
-      if os.path.exists("{0}/{1}".format(srcdir,layer)):
+      if os.path.exists(os.path.abspath( DIRNAME[layer] ) ):
           print("Note:", 'Git repo {} exits! Skipping download.'.format(layer))
-          continue
-      if not URLS[layer]:
-          if not LOCATIONS[layer]:
-              print("Error:", 'Must define {} git repo or location!'.format(layer))
-              raise("Error:", 'Must define layer git repo or location!')
           continue
       if URLS[layer] and LOCATIONS[layer]:
           print("Error:", 'Both url and location are defined for {} layer!'.format(layer))
           raise("Error:", 'Both layer url and location are defined!')
+      if not URLS[layer]:
+          if not LOCATIONS[layer]:
+             print("Error:", 'Must define {} git repo or location!'.format(layer))
+             raise("Error:", 'Must define layer git repo or location!')
+          continue
 
       BRANCH = ''
       COMMIT = ''
@@ -199,15 +208,47 @@ def downloadporjects(srcdir,verbosity):
       if not BRANCH:
          BRANCH = 'work_branch'
       
-      cmd = 'git clone {0}'.format(URLS[layer])
+      cmd = 'git clone {}'.format(URLS[layer])
       if echo_check_call(cmd,True):
          raise('Error: running {}'.format(cmd))
 
-      cmd = 'cd {0}; git checkout -b {1} {2}'.format(layer, BRANCH, COMMIT)
+      cmd = 'cd {0}; git checkout -b {1} {2}'.format(DIRNAME[layer], BRANCH, COMMIT)
       if echo_check_call(cmd,True):
           raise('Error: running {}'.format(cmd))
 
+def parselayerconffiles (layername, root):
+  f = open(os.path.join(os.path.abspath(root), "conf", "layer.conf"), 'r')
+  lines = f.readlines()
+  f.close
+  for line in lines:
+    if re.search( 'BBFILE_COLLECTIONS' , line):
+      (dummy, collectionname) = line.rsplit('=')
+      collectionname = collectionname.strip()
+      collectionname = collectionname.strip("\"")
+      COLLECTION_NAME[layername] = collectionname
 
+def traversedir (layer, root):
+  for path, dirs, files in os.walk(root):
+    for filename in files:
+       if filename == 'layer.conf':
+         ( collectionpath, dummy) = os.path.split(path)
+         ( dymmy, layername) = os.path.split(collectionpath)
+         parselayerconffiles(layername, collectionpath)
+         COLLECTION_PATH[layername] = collectionpath
+         break
+
+def parseCollections (srcdir):
+    for layer in WEBOSLAYERS:
+      if ( URLS[layer] ):
+         pathstr = os.path.abspath( os.path.join(srcdir,DIRNAME[layer]) )
+      if ( LOCATIONS[layer] ):
+         pathstr = os.path.abspath( LOCATIONS[layer] )
+
+      if ( os.path.exists( '{}'.format(pathstr)) ):
+          traversedir(layer, pathstr)
+      else:
+          print("Error:", 'directory does not exist {} !'.format(pathstr))
+          raise("Error:", 'Missing layer directory!')  
 
 def writebblayersconf(sourcedir, machine):
     f = open(os.path.join(sourcedir, "BUILD-{0}".format(machine), "conf", "bblayers.conf"), 'a')
@@ -223,12 +264,10 @@ def writebblayersconf(sourcedir, machine):
                leftside = layer
                leftside = leftside.replace('-','_')
                leftside = leftside.upper()
-               if layer == "openembedded-core":
-                    str = "{0}_LAYER ?= \"${{PALMDIR}}/{1}/meta\" ".format(leftside, layer)
-               elif not URLS[layer]:
+               if not URLS[layer]:
                     str = "{0}_LAYER ?= \"{1}\" ".format(leftside, LOCATIONS[layer])
                else:
-                    str = "{0}_LAYER ?= \"${{PALMDIR}}/{1}\"".format(leftside, layer)
+                    str = "{0}_LAYER ?= \"{1}\"".format(leftside, COLLECTION_PATH[layer])
 
                f.write(str)
                f.write('\n')
@@ -255,12 +294,16 @@ def writebblayersconf(sourcedir, machine):
     f.write('  "')
     f.write('\n')
     for layer in LAYERSPRIORITY:
-        if LAYERSPRIORITY[layer] == -1:
+        if LAYERSPRIORITY[layer] <= 0 :
             continue
-        f.write("BBFILE_PRIORITY_{0} = \"{1}\"".format(layer, LAYERSPRIORITY[layer]))
+        f.write("BBFILE_PRIORITY_{0} = \"{1}\"".format(COLLECTION_NAME[layer], LAYERSPRIORITY[layer]))
         f.write('\n')
     f.close
 
+
+    
+def updatelayer ():
+    return
 
 
 if __name__ == '__main__':
@@ -357,7 +400,8 @@ if __name__ == '__main__':
         echo_check_call(cmd, options.verbose)
 
         readlayers(srcdir)
-        downloadporjects(srcdir,True)
+        downloadprojects(srcdir,True)
+        parseCollections(srcdir)
         writebblayersconf(srcdir, machine)
 
         logger.info('Done.\n')
