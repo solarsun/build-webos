@@ -227,7 +227,7 @@ def parselayerconffiles (layername, root):
       collectionname = collectionname.strip("\"")
       COLLECTION_NAME[layername] = collectionname
 
-def traversedir (layer, root):
+def traversedir (root):
   for path, dirs, files in os.walk(root):
     for filename in files:
        if filename == 'layer.conf':
@@ -240,12 +240,12 @@ def traversedir (layer, root):
 def parseCollections (srcdir):
     for layer in WEBOSLAYERS:
       if ( URLS[layer] ):
-         pathstr = os.path.abspath( os.path.join(srcdir,DIRNAME[layer]) )
+         pathstr = DIRNAME[layer]
       if ( LOCATIONS[layer] ):
          pathstr = os.path.abspath( LOCATIONS[layer] )
 
       if ( os.path.exists( '{}'.format(pathstr)) ):
-          traversedir(layer, pathstr)
+          traversedir(pathstr)
       else:
           print("Error:", 'directory does not exist {} !'.format(pathstr))
           raise("Error:", 'Missing layer directory!')  
@@ -267,7 +267,7 @@ def writebblayersconf(sourcedir, machine):
                if not URLS[layer]:
                     str = "{0}_LAYER ?= \"{1}\" ".format(leftside, LOCATIONS[layer])
                else:
-                    str = "{0}_LAYER ?= \"{1}\"".format(leftside, COLLECTION_PATH[layer])
+                    str = "{0}_LAYER ?= \"${{PALMDIR}}/{1}\"".format(leftside, COLLECTION_PATH[layer])
 
                f.write(str)
                f.write('\n')
