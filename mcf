@@ -143,8 +143,8 @@ def location_to_dirname(layer, location):
 def readlayers(path):
    sys.path.insert(0,path)
    if not os.path.isfile(os.path.join(path,'weboslayers.py')):
-      print ("Error:" 'Configuration file {} does not exists!'.format(os.path.join(path,'webosadditionallayers.py')))
-      raise ("Error:" 'Configuration file {} does not exists!'.format(os.path.join(path,'webosadditionallayers.py')))
+      print ("Error:" 'Configuration file {} does not exists!'.format(os.path.join(path,'weboslayers.py')))
+      raise ("Error:" 'Configuration file {} does not exists!'.format(os.path.join(path,'weboslayers.py')))
 
    from weboslayers import webos_layers
    layerscount = 0
@@ -169,8 +169,8 @@ def readlayers(path):
 def readdistro(path):
    sys.path.insert(0,path)
    if not os.path.isfile(os.path.join(path,'weboslayers.py')):
-      print ("Error:" 'Configuration file {} does not exists!'.format(os.path.join(path,'webosadditionallayers.py')))
-      raise ("Error:" 'Configuration file {} does not exists!'.format(os.path.join(path,'webosadditionallayers.py')))
+      print ("Error:" 'Configuration file {} does not exists!'.format(os.path.join(path,'weboslayers.py')))
+      raise ("Error:" 'Configuration file {} does not exists!'.format(os.path.join(path,'weboslayers.py')))
 
    from weboslayers import Distribution
    return Distribution
