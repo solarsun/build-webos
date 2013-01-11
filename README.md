@@ -130,18 +130,7 @@ To remove the shared state for a component as well as its build artifacts to ens
 
 Adding new layers
 =================
-The script automates the process of adding new OE layers to the build environment.  The information required for integrting new layer are; layer name, OE priority, repository, identification in the form branch, commit or tag ids. It is alsoe possible to reference a layer from local storage area.  The details are documented in the template file build-template/webosadditionallayers.py.
-
-To setup the build environment to include the new layer, the mcf command would look like:
-
-    $ ./mcf [--al | --enable-additonallayers] <path to where script is located> <machine> 
-    
-If a new layer defines alternative distribution name, the mcf command is run with the following options:
-
-    $ ./mcf [-distro | --enable-distro] <distro name> -al <./path> <machine>
-
-Once the build environment is setup, the build procedure will be similar to the one described above.
-
+The script automates the process of adding new OE layers to the build environment.  The information required for integrate new layer are; layer name, OE priority, repository, identification in the form branch, commit or tag ids. It is also possible to reference a layer from local storage area.  The details are documented in weboslayers.py.
 
 Copyright and License Information
 =================================
