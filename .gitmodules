@@ -7,9 +7,6 @@
 [submodule "meta-openembedded"]
 	path = meta-openembedded
 	url = git://github.com/openembedded/meta-oe.git
-[submodule "meta-oe"]
-	path = meta-oe
-	url = git@github.com:openwebos/meta-oe.git
 [submodule "meta-webos"]
 	path = meta-webos
 	url = git@github.com:openwebos/meta-webos.git
