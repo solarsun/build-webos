@@ -1921,8 +1921,6 @@ $as_echo "$webos" >&6; }
 # metaoe
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking metaoe" >&5
 $as_echo_n "checking metaoe... " >&6; }
-# IKQ temporary replacing meta-openembedded with meta-oe from openwebos github
-# m4_define([metaoe_layer_location], ['${PALMDIR}/meta-openembedded/meta-oe'])
 
 
 # Check whether --enable-metaoe was given.
@@ -1934,7 +1932,7 @@ fi
 
 case "$enable_metaoe" in
      no) enable_metaoe_layer='' ;;
-     *) enable_metaoe_layer='${PALMDIR}/meta-oe' ;;
+     *) enable_metaoe_layer='${PALMDIR}/meta-openembedded/meta-oe' ;;
 esac
 metaoe=$enable_metaoe
 

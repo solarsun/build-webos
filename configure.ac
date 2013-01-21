@@ -166,9 +166,7 @@ AC_MSG_RESULT([$webos])
 
 # metaoe
 AC_MSG_CHECKING([metaoe])
-# IKQ temporary replacing meta-openembedded with meta-oe from openwebos github
-# m4_define([metaoe_layer_location], ['${PALMDIR}/meta-openembedded/meta-oe'])
-m4_define([metaoe_layer_location], ['${PALMDIR}/meta-oe'])
+m4_define([metaoe_layer_location], ['${PALMDIR}/meta-openembedded/meta-oe'])
 m4_define([webos_default_metaoe], ['True'])
 AC_ARG_ENABLE([metaoe], [AS_HELP_STRING([--enable-metaoe],
 		     [configure to include metaoe (default: enabled)])],

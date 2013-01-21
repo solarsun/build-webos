@@ -125,7 +125,6 @@ def getopts():
     partitions.add_argument('-W', '--enable-webos', dest='webos', default='submodule',
                             help='ref to use for meta-webos (default: submodule)')
 
-    # IKQ temporary replacing meta-openembedded with meta-oe from openwebos github
     partitions.add_argument('-M', '--disable-metaoe', '--disable-meta-oe', dest='metaoe', action='store_const', const=False,
                             default='submodule', help='do not check out meta-oe layer (default: False)')
 
@@ -284,9 +283,8 @@ if __name__ == '__main__':
         if options.oecore:
             force_submodule('openembedded-core', options.verbose, options.oecore)
 
-        # IKQ temporary replacing meta-openembedded with meta-oe from openwebos github
         if options.metaoe:
-            force_submodule('meta-oe', options.verbose, branch=options.metaoe)
+            force_submodule('meta-openembedded', options.verbose, branch=options.metaoe)
 
         if options.webos:
             force_submodule('meta-webos', options.verbose, branch=options.webos)
