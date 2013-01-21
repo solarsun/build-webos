@@ -9,4 +9,4 @@
 	url = git://github.com/openembedded/meta-oe.git
 [submodule "meta-webos"]
 	path = meta-webos
-	url = git@github.com:openwebos/meta-webos.git
+	url = git://github.com/openwebos/meta-webos.git
