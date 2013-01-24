@@ -177,6 +177,9 @@ if __name__ == '__main__':
 
     options = getopts()
 
+    # Update git submodule URLs
+    echo_check_call('git submodule sync', options.verbose)
+
     if options.primary or options.secondary:
         force_submodule('meta-webos', options.verbose, options.webos)
         with open(os.path.join(os.path.dirname(progname), 'meta-webos', 'conf', 'devices'), 'r') as f:
