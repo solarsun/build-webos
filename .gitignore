@@ -1,21 +1,26 @@
-# Copyright (c) 2012 Hewlett-Packard Development Company, L.P.
+# Copyright (c) 2012-2013  Hewlett-Packard Development Company, L.P.
 
 # Common Eclipse project files
 .project
 .cproject
+.pc
 
-# Build Products
+# Build products worth keeping between clean builds
+sstate-cache/
+buildhistory
+downloads
+
+# Other build products
 *~
 BUILD-*/
 Makefile
 TAGS
 autom4te.cache
 bitbake.lock
-downloads/
 mcf.status
-sstate-cache/
+__pycache__/
 tmp
-buildhistory
+patches
 
 # Local override file
 webos-local.conf
