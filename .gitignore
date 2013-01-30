@@ -5,26 +5,28 @@
 .cproject
 .pc
 
-# Build Products
+# Build products worth keeping between clean builds
+sstate-cache/
+buildhistory
+downloads
+
+# Other build products
 *~
 BUILD-*/
 Makefile
 TAGS
 autom4te.cache
 bitbake.lock
-downloads
 mcf.status
-sstate-cache/
+__pycache__/
 tmp
 patches
+
+# Other checkouts managed by mcf
 bitbake
+oe-core
 meta-oe
 meta-webos
-oe-core
-buildhistory
-
 
 # Local override file
 webos-local.conf
-__pycache__/
-
