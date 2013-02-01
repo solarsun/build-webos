@@ -215,11 +215,11 @@ def downloadprojects(srcdir,verbosity):
       if not BRANCH:
          BRANCH = 'work_branch'
       
-      cmd = 'git clone {}'.format(URLS[layer])
+      cmd = 'git clone -n {}'.format(URLS[layer])
       if echo_check_call(cmd,True):
          raise('Error: running {}'.format(cmd))
 
-      cmd = 'cd {0}; git checkout -b {1} {2}'.format(DIRNAME[layer], BRANCH, COMMIT)
+      cmd = 'cd {0}; git checkout -B {1} {2}'.format(DIRNAME[layer], BRANCH, COMMIT)
       if echo_check_call(cmd,True):
           raise('Error: running {}'.format(cmd))
 
