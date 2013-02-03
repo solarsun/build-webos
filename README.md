@@ -48,7 +48,7 @@ To run the resulting build in the qemux86 emulator, enter:
 
     $ cd BUILD-qemux86
     $ source bitbake.rc 
-    $ runqemu webos-image qemux86 qemuparams="-m 512" serial
+    $ runqemu webos-image qemux86 qemuparams="-m 512" kvm serial
 
 You will be prompted by sudo for a password:
 
@@ -64,7 +64,7 @@ A window entitled QEMU will appear with a login prompt. Don't do anything. A bit
 
 To go into Card View after launching an app, press your keyboard’s `HOME` key. 
 
-To start up a console on the emulator, don't attempt to login at the prompt that appears in the console from which you launched runqmeu. Instead, ssh into it as root (no password):
+To start up a console on the emulator, don't attempt to login at the prompt that appears in the console from which you launched runqemu. Instead, ssh into it as root (no password):
 
     $ ssh root@192.168.7.2
     root@192.168.7.2's password:
