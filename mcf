@@ -150,8 +150,8 @@ def location_to_dirname(layer, location):
 def readlayers(path):
    sys.path.insert(0,path)
    if not os.path.isfile(os.path.join(path,'weboslayers.py')):
-      print ("Error:" 'Configuration file {} does not exists!'.format(os.path.join(path,'weboslayers.py')))
-      raise ("Error:" 'Configuration file {} does not exists!'.format(os.path.join(path,'weboslayers.py')))
+      print ("Error:" 'Configuration file {} does not exist!'.format(os.path.join(path,'weboslayers.py')))
+      raise ("Error:" 'Configuration file {} does not exist!'.format(os.path.join(path,'weboslayers.py')))
 
    from weboslayers import webos_layers
    layerscount = 0
@@ -176,8 +176,8 @@ def readlayers(path):
 def readdistro(path):
    sys.path.insert(0,path)
    if not os.path.isfile(os.path.join(path,'weboslayers.py')):
-      print ("Error:" 'Configuration file {} does not exists!'.format(os.path.join(path,'weboslayers.py')))
-      raise ("Error:" 'Configuration file {} does not exists!'.format(os.path.join(path,'weboslayers.py')))
+      print ("Error:" 'Configuration file {} does not exist!'.format(os.path.join(path,'weboslayers.py')))
+      raise ("Error:" 'Configuration file {} does not exist!'.format(os.path.join(path,'weboslayers.py')))
 
    from weboslayers import Distribution
    return Distribution
@@ -185,7 +185,7 @@ def readdistro(path):
 def downloadprojects(srcdir,verbosity):
    for layer in WEBOSLAYERS:
       if os.path.exists(os.path.abspath( DIRNAME[layer] ) ):
-          print("Note:", 'Git repo {} exits! Skipping download.'.format(layer))
+          print("Note:", 'Git repo {} exists! Skipping download.'.format(layer))
           continue
       if URLS[layer] and LOCATIONS[layer]:
           print("Error:", 'Both url and location are defined for {} layer!'.format(layer))
@@ -215,11 +215,11 @@ def downloadprojects(srcdir,verbosity):
       if not BRANCH:
          BRANCH = 'work_branch'
       
-      cmd = 'git clone {}'.format(URLS[layer])
+      cmd = 'git clone -n {}'.format(URLS[layer])
       if echo_check_call(cmd,True):
          raise('Error: running {}'.format(cmd))
 
-      cmd = 'cd {0}; git checkout -b {1} {2}'.format(DIRNAME[layer], BRANCH, COMMIT)
+      cmd = 'cd {0}; git checkout -B {1} {2}'.format(DIRNAME[layer], BRANCH, COMMIT)
       if echo_check_call(cmd,True):
           raise('Error: running {}'.format(cmd))
 
