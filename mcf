@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-# Copyright (c) 2008 - 2012 Hewlett-Packard Development Company, L.P.
+# Copyright (c) 2008-2013  Hewlett-Packard Development Company, L.P.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -94,9 +94,20 @@ def getopts():
     network.add_argument('--enable-network', dest='network', action='store_true', default=True,
                          help='enable fetching through the network (default: True)')
 
+    # use shorter form without --enable prefix, --disable variant doesn't make sense, because it's disabled by default
+    # option in autoconf's configure.ac is named --enable-sstatemirror (because it's created with AC_ARG_ENABLE macro)
+    mirrors.add_argument('--sstatemirror', dest='sstatemirror', action='append',
+                         help='set sstatemirror to specified URL, repeat this option if you want multiple sstate mirrors (default: None)')
+    
+    premirrorurl = mirrors.add_mutually_exclusive_group()
     default_premirror = 'http://downloads.yoctoproject.org/mirror/sources'
-    mirrors.add_argument('--enable-premirror', dest='premirror', help='set premirror (default: {})'.format(default_premirror),
-                         default=default_premirror)
+    premirrorurl.add_argument('--enable-default-premirror', dest='premirror', action='store_const', const=default_premirror, default="",
+                              help='enable default premirror URL (default: False)')
+    # allow shorter form without --enable prefix, --disable variant doesn't make sense, because it's disabled by default
+    # but keep also variant with --enable prefix so that we don't have to update config in existing jenkins jobs
+    # option in autoconf's configure.ac is named --enable-premirror (because it's created with AC_ARG_ENABLE macro)
+    premirrorurl.add_argument('--premirror', '--enable-premirror', dest='premirror', default='',
+                              help='set premirror to specified URL (default: None)')
 
     premirroronly = mirrors.add_mutually_exclusive_group()
     premirroronly.add_argument('--disable-fetch-premirror-only', dest='fetchpremirroronly', action='store_false', default=False,
@@ -368,6 +379,7 @@ if __name__ == '__main__':
         ['@machines_only@', ' '.join([i.split(':')[0] for i in options.machines])],
         ['@parallel_make@', '{}'.format(options.parallel_make)],
         ['@premirror@', options.premirror],
+        ['@sstatemirror@', '"{}"'.format(' '.join(options.sstatemirror) if options.sstatemirror else '')],
         ['@distro@', '{}'.format(readdistro(srcdir))],
         ['@buildhistory@', '--{}-buildhistory'.format('enable' if options.buildhistory else 'disable')],
         ['@network@', '--{}-network'.format('enable' if options.network else 'disable')],
@@ -394,6 +406,7 @@ if __name__ == '__main__':
            --enable-bb-number-threads=@bb_number_threads@ \
            --enable-parallel-make=@parallel_make@ \
            --enable-premirror=@premirror@ \
+           --enable-sstatemirror=@sstatemirror@ \
            --enable-distro=@distro@ \
            @buildhistory@ \
            @network@ \

@@ -1,6 +1,6 @@
 # Process this file with autoconf to produce a configure script.
 
-# Copyright (c) 2008 - 2012 Hewlett-Packard Development Company, L.P.
+# Copyright (c) 2008-2013  Hewlett-Packard Development Company, L.P.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 AC_INIT(webos, 0.0)
 AC_PREREQ([2.61])
-AC_COPYRIGHT([Copyright 2009 Palm, Inc.])
+AC_COPYRIGHT([Copyright 2008-2013  Hewlett-Packard Development Company, L.P.])
 AC_CONFIG_SRCDIR([build-templates/mcf-status.in])
 
 # customization
@@ -60,13 +60,45 @@ AC_MSG_RESULT([$enable_bb_number_threads])
 
 # premirror
 AC_MSG_CHECKING([premirror])
-m4_define([webos_default_premirror], [http://downloads.yoctoproject.org/mirror/sources])
-AC_ARG_ENABLE([premirror], [AS_HELP_STRING([--enable-premirror=M],
-		     set PREMIRROR (default: "webos_default_premirror"))],
-		     [],
-		     [enable_premirror="webos_default_premirror"])
-AC_SUBST([premirror], [$enable_premirror])
-AC_MSG_RESULT([$enable_premirror])
+AC_ARG_ENABLE([premirror], [AS_HELP_STRING([--enable-premirror=PREMIRROR],
+		     set PREMIRROR (default: none, own-mirrors class will not be used))],
+                     [if test -z "$enableval"; then
+                         enable_premirror_assignment=""
+                         enable_premirror_inherit=""
+                      else
+                         enable_premirror_assignment="SOURCE_MIRROR_URL ?= \"$enableval\""
+                         enable_premirror_inherit="INHERIT += \"own-mirrors\""
+                      fi
+                     ],
+                     [ enable_premirror_assignment=""
+                       enable_premirror_inherit=""
+                     ])
+AC_SUBST([premirror_assignment], [$enable_premirror_assignment])
+AC_SUBST([premirror_inherit], [$enable_premirror_inherit])
+AC_MSG_RESULT([$enableval])
+
+# sstate mirror
+AC_MSG_CHECKING([sstatemirror])
+AC_ARG_ENABLE([sstatemirror], [AS_HELP_STRING([--enable-sstatemirror=SSTATE_MIRROR_URL],
+                     set SSTATE_MIRROR_URL (default: none))],
+                     [if test -z "$enableval"; then
+                         enable_sstatemirror_assignment=""
+                      else
+                         enable_sstatemirror_assignment="SSTATE_MIRRORS ?= \" \\"
+                         for URL in $enableval; do
+                           echo "$URL" | grep "/PATH$" && AC_MSG_ERROR([$URL already ends with '/PATH', remove that])
+                           echo "$URL" | grep "/$" && AC_MSG_ERROR([$URL ends with '/', remove that])
+                           enable_sstatemirror_assignment="$enable_sstatemirror_assignment
+  file:// $URL/PATH \n \\"
+                         done
+                         enable_sstatemirror_assignment="$enable_sstatemirror_assignment
+\""
+                      fi
+                     ],
+                     [ enable_sstatemirror_assignment=""
+                     ])
+AC_SUBST([sstatemirror_assignment], [$enable_sstatemirror_assignment])
+AC_MSG_RESULT([$enableval])
 
 # network
 AC_MSG_CHECKING([network])
