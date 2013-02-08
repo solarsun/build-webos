@@ -11,7 +11,7 @@
 # This configure script is free software; the Free Software Foundation
 # gives unlimited permission to copy, distribute and modify it.
 #
-# Copyright 2009 Palm, Inc.
+# Copyright 2008-2013  Hewlett-Packard Development Company, L.P.
 ## -------------------- ##
 ## M4sh Initialization. ##
 ## -------------------- ##
@@ -580,7 +580,9 @@ privateinternalcomponentmirror
 generatemirrortarballs
 fetchpremirroronly
 no_network
-premirror
+sstatemirror_assignment
+premirror_inherit
+premirror_assignment
 bb_number_threads
 parallel_make
 customization_feature
@@ -629,6 +631,7 @@ enable_option_checking
 enable_parallel_make
 enable_bb_number_threads
 enable_premirror
+enable_sstatemirror
 enable_network
 enable_fetch_premirror_only
 enable_generate_mirror_tarballs
@@ -1259,8 +1262,11 @@ Optional Features:
   --enable-bb-number-threads=N
                           maximum number of tasks for each submake of bitbake
                           to spawn (default: "1")
-  --enable-premirror=M    set PREMIRROR (default:
-                          "http://downloads.yoctoproject.org/mirror/sources")
+  --enable-premirror=PREMIRROR
+                          set PREMIRROR (default: none, own-mirrors class will
+                          not be used)
+  --enable-sstatemirror=SSTATE_MIRROR_URL
+                          set SSTATE_MIRROR_URL (default: none)
   --enable-network        enable network fetching (default: "True")
   --enable-fetch-premirror-only
                           fetch only from premirror (default: "False")
@@ -1348,7 +1354,7 @@ Copyright (C) 2010 Free Software Foundation, Inc.
 This configure script is free software; the Free Software Foundation
 gives unlimited permission to copy, distribute and modify it.
 
-Copyright 2009 Palm, Inc.
+Copyright 2008-2013  Hewlett-Packard Development Company, L.P.
 _ACEOF
   exit
 fi
@@ -1770,18 +1776,57 @@ $as_echo "$enable_bb_number_threads" >&6; }
 # premirror
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking premirror" >&5
 $as_echo_n "checking premirror... " >&6; }
-
 # Check whether --enable-premirror was given.
 if test "${enable_premirror+set}" = set; then :
-  enableval=$enable_premirror;
+  enableval=$enable_premirror; if test -z "$enableval"; then
+                         enable_premirror_assignment=""
+                         enable_premirror_inherit=""
+                      else
+                         enable_premirror_assignment="SOURCE_MIRROR_URL ?= \"$enableval\""
+                         enable_premirror_inherit="INHERIT += \"own-mirrors\""
+                      fi
+
 else
-  enable_premirror="http://downloads.yoctoproject.org/mirror/sources"
+   enable_premirror_assignment=""
+                       enable_premirror_inherit=""
+
 fi
 
-premirror=$enable_premirror
+premirror_assignment=$enable_premirror_assignment
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $enable_premirror" >&5
-$as_echo "$enable_premirror" >&6; }
+premirror_inherit=$enable_premirror_inherit
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $enableval" >&5
+$as_echo "$enableval" >&6; }
+
+# sstate mirror
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking sstatemirror" >&5
+$as_echo_n "checking sstatemirror... " >&6; }
+# Check whether --enable-sstatemirror was given.
+if test "${enable_sstatemirror+set}" = set; then :
+  enableval=$enable_sstatemirror; if test -z "$enableval"; then
+                         enable_sstatemirror_assignment=""
+                      else
+                         enable_sstatemirror_assignment="SSTATE_MIRRORS ?= \" \\"
+                         for URL in $enableval; do
+                           echo "$URL" | grep "/PATH$" && as_fn_error $? "$URL already ends with '/PATH', remove that" "$LINENO" 5
+                           echo "$URL" | grep "/$" && as_fn_error $? "$URL ends with '/', remove that" "$LINENO" 5
+                           enable_sstatemirror_assignment="$enable_sstatemirror_assignment
+  file://.* $URL/PATH \n \\"
+                         done
+                         enable_sstatemirror_assignment="$enable_sstatemirror_assignment
+\""
+                      fi
+
+else
+   enable_sstatemirror_assignment=""
+
+fi
+
+sstatemirror_assignment=$enable_sstatemirror_assignment
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $enableval" >&5
+$as_echo "$enableval" >&6; }
 
 # network
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking network" >&5
