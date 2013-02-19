@@ -1,4 +1,4 @@
-# Copyright (c) 2008 - 2012 Hewlett-Packard Development Company, L.P.
+# Copyright (c) 2008-2013  Hewlett-Packard Development Company, L.P.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -50,14 +50,13 @@
 #
 Distribution = "webos"
 
-# github.com/openembedded repositories are read-only mirrors 
+# github.com/openembedded repositories are read-only mirrors
 # of authoritative repositories on git.openembedded.org
 webos_layers = [
 ('bitbake',          -1, 'git://github.com/openembedded/bitbake.git',        'branch=1.16,commit=34a8d45', ''  ),
 ('meta',              5, 'git://github.com/openembedded/oe-core.git',        'branch=danny,commit=8e057a5', ''  ),
 ('meta-oe',           6, 'git://github.com/openembedded/meta-oe.git',        'branch=danny,commit=f026e96', ''  ),
 #('meta-networking',   6, 'git://github.com/openembedded/meta-oe.git',        '', ''  ),
-#('meta-oe',           6, 'git://github.com/openwebos/meta-oe.git' ,          'commit=5c40f0e', ''),
 ('meta-webos',       10, 'git://github.com/openwebos/meta-webos.git',        'commit=bb6bcc5', ''),
-#('meta-name',        15, '',  '', '/home/userid/meta-name'),
+#('meta-name',        15, '',  '', '/home/userid/meta-name')
 ]
