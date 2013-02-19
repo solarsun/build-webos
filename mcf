@@ -239,7 +239,7 @@ def parselayerconffiles (layername, root):
   lines = f.readlines()
   f.close
   for line in lines:
-    if re.search( 'BBFILE_COLLECTIONS' , line):
+    if re.search( 'BBFILE_COLLECTIONS.*=' , line):
       (dummy, collectionname) = line.rsplit('=')
       collectionname = collectionname.strip()
       collectionname = collectionname.strip("\"")
