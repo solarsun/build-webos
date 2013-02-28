@@ -32,48 +32,49 @@ done
 
 sane=true
 
-distributor_id="`/usr/bin/lsb_release -s -i`"
-release="`/usr/bin/lsb_release -s -r`"
-description="`/usr/bin/lsb_release -s -d`"
-codename="`/usr/bin/lsb_release -s -c`"
-arch="`/usr/bin/dpkg --print-architecture`"
+distributor_id=`/usr/bin/lsb_release -s -i`
+release=`/usr/bin/lsb_release -s -r`
+description=`/usr/bin/lsb_release -s -d`
+codename=`/usr/bin/lsb_release -s -c`
+arch=`/usr/bin/dpkg --print-architecture`
+
+distributor_id_sane="^((Ubuntu))$"
+release_sane="^((12.04)|(12.10))$"
+description_sane="^((Ubuntu 12.04.1 LTS)|(Ubuntu 12.04.2 LTS)|(Ubuntu 12.10))$"
+codename_sane="^((precise)|(quantal))$"
+arch_sane="^((i386)|(amd64))$"
 
 case "${check_sanity}" in
     true)
         if [ ! -x /usr/bin/lsb_release ] ; then
             echo 'WARNING: /usr/bin/lsb_release not available, cannot test sanity of this system.' 1>&2
             sane=false
+        else
+            if ! echo "${distributor_id}" | egrep -q "${distributor_id_sane}"; then
+                echo "WARNING: Distributor ID reported by lsb_release '${distributor_id}' not in '${distributor_id_sane}'" 1>&2
+                sane=false
+            fi
+
+            if ! echo "${release}" | egrep -q "${release_sane}"; then
+                echo "WARNING: Release reported by lsb_release '${release}' not in '${release_sane}'" 1>&2
+                sane=false
+            fi
+
+            if ! echo "${description}" | egrep -q "${description_sane}"; then
+                echo "WARNING: Description reported by lsb_release '${description}' not in '${description_sane}'" 1>&2
+                sane=false
+            fi
+
+            if ! echo "${codename}" | egrep -q "${codename_sane}"; then
+                echo "WARNING: Codename reported by lsb_release '${codename}' not in '${codename_sane}'" 1>&2
+                sane=false
+            fi
         fi
 
-        case "${distributor_id}" in
-            Ubuntu) ;;
-            *) sane=false ;;
-        esac
-
-        case "${release}" in
-            12.04) ;;
-            12.10) ;;
-            *) sane=false ;;
-        esac
-
-        case "${description}" in
-            'Ubuntu 12.04.1 LTS') ;;
-            'Ubuntu 12.04.2 LTS') ;;
-            'Ubuntu 12.10') ;;
-            *) sane=false ;;
-        esac
-
-        case "${codename}" in
-            precise) ;;
-            quantal) ;;
-            *) sane=false ;;
-        esac
-
-        case "${arch}" in
-            i386) ;;
-            amd64) ;;
-            *) sane=false ;;
-        esac
+        if ! echo "${arch}" | egrep -q "${arch_sane}"; then
+            echo "WARNING: Architecture reported by dpkg --print-architecture '${arch}' not in '${arch_sane}'" 1>&2
+            sane=false
+        fi
 
         case "${sane}" in
             true) ;;
