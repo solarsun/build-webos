@@ -1,6 +1,6 @@
 #!/bin/sh -e
 
-# Copyright (c) 2008 - 2012 Hewlett-Packard Development Company, L.P.
+# Copyright (c) 2008-2013 Hewlett-Packard Development Company, L.P.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ done
 
 sane=true
 
+distributor_id="`/usr/bin/lsb_release -s -i`"
 release="`/usr/bin/lsb_release -s -r`"
 description="`/usr/bin/lsb_release -s -d`"
 codename="`/usr/bin/lsb_release -s -c`"
@@ -39,9 +40,15 @@ arch="`/usr/bin/dpkg --print-architecture`"
 
 case "${check_sanity}" in
     true)
-        if [ ! -x /usr/bin/lsb_release -o "`/usr/bin/lsb_release -s -i`" != 'Ubuntu' ] ; then
+	if [ ! -x /usr/bin/lsb_release ] ; then
+	    echo 'WARNING: /usr/bin/lsb_release not available, cannot test sanity of this system.' 1>&2
 	    sane=false
 	fi
+
+	case "${distributor_id}" in
+	Ubuntu) ;;
+	*) sane=false ;;
+	esac
 
 	case "${release}" in
 	11.04) ;;
