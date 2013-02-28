@@ -51,25 +51,27 @@ case "${check_sanity}" in
         esac
 
         case "${release}" in
-            11.04) ;;
             12.04) ;;
+            12.10) ;;
             *) sane=false ;;
         esac
 
         case "${description}" in
-            'Ubuntu 11.04') ;;
-            'Ubuntu 12.04 LTS') ;;
             'Ubuntu 12.04.1 LTS') ;;
+            'Ubuntu 12.04.2 LTS') ;;
+            'Ubuntu 12.10') ;;
             *) sane=false ;;
         esac
 
         case "${codename}" in
-            natty|precise) ;;
+            precise) ;;
+            quantal) ;;
             *) sane=false ;;
         esac
 
         case "${arch}" in
             i386) ;;
+            amd64) ;;
             *) sane=false ;;
         esac
 
