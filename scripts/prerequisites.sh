@@ -21,12 +21,12 @@ usage="$0 [--help|-h|-H]"
 
 for i ; do
     case "$i" in
-	--help|-h|-H) echo ${usage} ;;
-	*)
-	    echo Unrecognized option: $i 1>&2
-	    echo ${usage}
-	    exit 1
-	    ;;
+        --help|-h|-H) echo ${usage} ;;
+        *)
+            echo Unrecognized option: $i 1>&2
+            echo ${usage}
+            exit 1
+            ;;
     esac
 done
 
@@ -40,46 +40,46 @@ arch="`/usr/bin/dpkg --print-architecture`"
 
 case "${check_sanity}" in
     true)
-	if [ ! -x /usr/bin/lsb_release ] ; then
-	    echo 'WARNING: /usr/bin/lsb_release not available, cannot test sanity of this system.' 1>&2
-	    sane=false
-	fi
+        if [ ! -x /usr/bin/lsb_release ] ; then
+            echo 'WARNING: /usr/bin/lsb_release not available, cannot test sanity of this system.' 1>&2
+            sane=false
+        fi
 
-	case "${distributor_id}" in
-	Ubuntu) ;;
-	*) sane=false ;;
-	esac
+        case "${distributor_id}" in
+            Ubuntu) ;;
+            *) sane=false ;;
+        esac
 
-	case "${release}" in
-	11.04) ;;
-	12.04) ;;
-	*) sane=false ;;
-	esac
+        case "${release}" in
+            11.04) ;;
+            12.04) ;;
+            *) sane=false ;;
+        esac
 
-	case "${description}" in
-	'Ubuntu 11.04') ;;
-	'Ubuntu 12.04 LTS') ;;
-	'Ubuntu 12.04.1 LTS') ;;
-	*) sane=false ;;
-	esac
+        case "${description}" in
+            'Ubuntu 11.04') ;;
+            'Ubuntu 12.04 LTS') ;;
+            'Ubuntu 12.04.1 LTS') ;;
+            *) sane=false ;;
+        esac
 
-	case "${codename}" in
-	natty|precise) ;;
-	*) sane=false ;;
-	esac
+        case "${codename}" in
+            natty|precise) ;;
+            *) sane=false ;;
+        esac
 
-	case "${arch}" in
-	i386) ;;
-	*) sane=false ;;
-	esac
+        case "${arch}" in
+            i386) ;;
+            *) sane=false ;;
+        esac
 
-	case "${sane}" in
-	true) ;;
-	false)
-	    echo 'WARNING: This system configuration is untested. Let us know if it works.' 1>&2
-	    ;;
-	esac
-	;;
+        case "${sane}" in
+            true) ;;
+            false)
+                echo 'WARNING: This system configuration is untested. Let us know if it works.' 1>&2
+                ;;
+        esac
+        ;;
 
     false) ;;
 esac
