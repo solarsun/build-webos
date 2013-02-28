@@ -116,9 +116,6 @@ apt-get install --yes \
     gawk \
     git \
     language-pack-en \
-    libgl1-mesa-dev \
-    libglu1-mesa-dev \
-    libsdl1.2-dev \
     python3 \
     subversion \
     texi2html \
