@@ -34,13 +34,11 @@ sane=true
 
 distributor_id=`/usr/bin/lsb_release -s -i`
 release=`/usr/bin/lsb_release -s -r`
-description=`/usr/bin/lsb_release -s -d`
 codename=`/usr/bin/lsb_release -s -c`
 arch=`/usr/bin/dpkg --print-architecture`
 
 distributor_id_sane="^((Ubuntu))$"
 release_sane="^((12.04)|(12.10))$"
-description_sane="^((Ubuntu 12.04.1 LTS)|(Ubuntu 12.04.2 LTS)|(Ubuntu 12.10))$"
 codename_sane="^((precise)|(quantal))$"
 arch_sane="^((i386)|(amd64))$"
 
@@ -57,11 +55,6 @@ case "${check_sanity}" in
 
             if ! echo "${release}" | egrep -q "${release_sane}"; then
                 echo "WARNING: Release reported by lsb_release '${release}' not in '${release_sane}'" 1>&2
-                sane=false
-            fi
-
-            if ! echo "${description}" | egrep -q "${description_sane}"; then
-                echo "WARNING: Description reported by lsb_release '${description}' not in '${description_sane}'" 1>&2
                 sane=false
             fi
 
