@@ -17,11 +17,13 @@
 # This has only been tested on Ubuntu-12.04 amd64.
 
 check_sanity=true
-usage="$0 [--help|-h|-H]"
+usage="$0 [--help|-h|-H] [--version|-v|-V]"
+version="1.0.0"
 
 for i ; do
     case "$i" in
-        --help|-h|-H) echo ${usage} ;;
+        --help|-h|-H) echo ${usage}; exit 0 ;;
+        --version|-v|-V) echo ${version}; exit 0 ;;
         *)
             echo Unrecognized option: $i 1>&2
             echo ${usage}
