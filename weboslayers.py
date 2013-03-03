@@ -53,9 +53,9 @@ Distribution = "webos"
 # github.com/openembedded repositories are read-only mirrors
 # of authoritative repositories on git.openembedded.org
 webos_layers = [
-('bitbake',          -1, 'git://github.com/openembedded/bitbake.git',        'branch=1.16,commit=34a8d45', ''  ),
-('meta',              5, 'git://github.com/openembedded/oe-core.git',        'branch=danny,commit=8e057a5', ''  ),
-('meta-oe',           6, 'git://github.com/openembedded/meta-oe.git',        'branch=danny,commit=f026e96', ''  ),
+('bitbake',          -1, 'git://github.com/openembedded/bitbake.git',        'branch=1.16,commit=4a97b83', ''  ),
+('meta',              5, 'git://github.com/openembedded/oe-core.git',        'branch=danny,commit=d961e42', ''  ),
+('meta-oe',           6, 'git://github.com/openembedded/meta-oe.git',        'branch=danny,commit=c02834a', ''  ),
 #('meta-networking',   6, 'git://github.com/openembedded/meta-oe.git',        '', ''  ),
 ('meta-webos',       10, 'git://github.com/openwebos/meta-webos.git',        'commit=bb6bcc5', ''),
 #('meta-name',        15, '',  '', '/home/userid/meta-name')
