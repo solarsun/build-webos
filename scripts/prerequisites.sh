@@ -18,7 +18,7 @@
 
 check_sanity=true
 usage="$0 [--help|-h|-H] [--version|-v|-V]"
-version="1.0.0"
+version="1.0.1"
 
 for i ; do
     case "$i" in
@@ -34,11 +34,6 @@ done
 
 sane=true
 
-distributor_id=`/usr/bin/lsb_release -s -i`
-release=`/usr/bin/lsb_release -s -r`
-codename=`/usr/bin/lsb_release -s -c`
-arch=`/usr/bin/dpkg --print-architecture`
-
 distributor_id_sane="^((Ubuntu))$"
 release_sane="^((12.04)|(12.10))$"
 codename_sane="^((precise)|(quantal))$"
@@ -50,6 +45,10 @@ case "${check_sanity}" in
             echo 'WARNING: /usr/bin/lsb_release not available, cannot test sanity of this system.' 1>&2
             sane=false
         else
+            distributor_id=`/usr/bin/lsb_release -s -i`
+            release=`/usr/bin/lsb_release -s -r`
+            codename=`/usr/bin/lsb_release -s -c`
+
             if ! echo "${distributor_id}" | egrep -q "${distributor_id_sane}"; then
                 echo "WARNING: Distributor ID reported by lsb_release '${distributor_id}' not in '${distributor_id_sane}'" 1>&2
                 sane=false
@@ -66,9 +65,15 @@ case "${check_sanity}" in
             fi
         fi
 
-        if ! echo "${arch}" | egrep -q "${arch_sane}"; then
-            echo "WARNING: Architecture reported by dpkg --print-architecture '${arch}' not in '${arch_sane}'" 1>&2
+        if [ ! -x /usr/bin/dpkg ] ; then
+            echo 'WARNING: /usr/bin/dpkg not available, cannot test architecture of this system.' 1>&2
             sane=false
+        else
+            arch=`/usr/bin/dpkg --print-architecture`
+            if ! echo "${arch}" | egrep -q "${arch_sane}"; then
+                echo "WARNING: Architecture reported by dpkg --print-architecture '${arch}' not in '${arch_sane}'" 1>&2
+                sane=false
+            fi
         fi
 
         case "${sane}" in
