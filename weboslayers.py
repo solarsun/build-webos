@@ -12,51 +12,57 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Documentation:
+# This implementation introduces next generation build environment for
+# Open webOS. The change introduces a mechanism to add additional layers to the
+# base ones: oe-core, meta-oe, and meta-webos, and to specify the commits to be
+# used for each. mcf now expects the layers to be defined in this file
+# (weboslayers.py in the same directory as mcf) as a list of Python data tuples:
 #
-# This implementation introduces next generation build environment
-# for OpenWebos. The change introduces a mechanism to add additional
-# layers to the base ones, meta-webos, meta-oe and oe-core.
-# The new layers contribute to the image content of WebOS.
+# webos_layers = [
+# ('layer-name', priority, 'URL', 'submission', 'working-dir'),
+# ...
+# ]
 #
-# The base layers are defined in weboslayers.py file located in 
-# the build directory, i.e build-webos.  Additional layers can
-# be added to the same file.
+# where:
 #
-# weboslayers.py file format uses python data structures to define 
-# the following:
-#
-# ('layer-name', integer-priority, 'URL', 'submission', 'working-dir')
-#
-# layers name = uniqe identifier, It represents the layer directoy containing
+# layer-name  = Unique identifier; it represents the layer directory containing
 #               conf/layer.conf.
-# priority    = layer priority as defined by Openembedded. Larger numbers
-#               have higher priority. A value of -1 indicates that the content
-#               is not a layer, for example the bitbake directory.
-# URL         = The git repo address for the layer on the web. A value of ''
-#               skips the download.
-# submission  = Is the git information to download and identify the precise
-#               content.  Submssion values could be "branch=<name>" and 
-#               "commmit=<id>" or "tag=<label>". Omitted branch information
-#               means master. Omitted commit or tag means tip of branch.
-# working-dir = Alternative project directory for the layer.
 #
-# The priority in this file overrides those specified in conf/layer.conf
-# for each layer. Excptions are oe-core and meta-oe, where they are present 
-# to control downloading of particular version of these layers, the layer priority
-# for these two layers must not be changed 
+# priority    = Integer layer priority as defined by OpenEmbedded. It also
+#               specifies the order in which layers are searched for files.
+#               Larger values have higher priority. A value of -1 indicates
+#               that the entry is not a layer; for example, bitbake.
 #
-# In additon to layers, the distribution name is also defined in this file as well.
+# URL         = The Git repository address for the layer from which to clone.
+#               A value of '' skips the cloning.
 #
+# submission  = The information use by Git to checkout and identify the precise
+#               content. Submission values could be "branch=<name>" and
+#               "commit=<id>" or "tag=<tag>". Omitted branch information means
+#               only that "work_branch" will be used as the name of the local
+#               branch (and note that specifying "branch=master" surprisingly
+#               results in an error). Omitted commit or tag means origin/HEAD
+#               will be checked out (which might NOT be origin/master, although
+#               it usually is).
+#
+# working-dir = Alternative directory for the layer.
+#
+# mcf also supports machine-specific layers: if this file defines a
+# webos_layers_<machine> list, it will be processed after the webos_layers
+# list.
+#
+# The name of the distribution is also defined in this file.
+#
+
 Distribution = "webos"
 
-# github.com/openembedded repositories are read-only mirrors
-# of authoritative repositories on git.openembedded.org
+# github.com/openembedded repositories are read-only mirrors of the authoritative
+# repositories on git.openembedded.org
 webos_layers = [
-('bitbake',          -1, 'git://github.com/openembedded/bitbake.git',        'branch=1.16,commit=4a97b83', ''  ),
-('meta',              5, 'git://github.com/openembedded/oe-core.git',        'branch=danny,commit=d961e42', ''  ),
-('meta-oe',           6, 'git://github.com/openembedded/meta-oe.git',        'branch=danny,commit=c02834a', ''  ),
-('meta-networking',   6, 'git://github.com/openembedded/meta-oe.git',        '', ''  ),
-('meta-webos',       10, 'git://github.com/openwebos/meta-webos.git',        'commit=bb6bcc5', ''),
-#('meta-name',        15, '',  '', '/home/userid/meta-name')
+('bitbake',               -1, 'git://github.com/openembedded/bitbake.git',        'branch=1.16,commit=4a97b83', ''),
+('meta',                   5, 'git://github.com/openembedded/oe-core.git',        'branch=danny,commit=d961e42', ''),
+('meta-oe',                6, 'git://github.com/openembedded/meta-oe.git',        'branch=danny,commit=c02834a', ''),
+('meta-networking',        6, 'git://github.com/openembedded/meta-oe.git',        '', ''),
+
+('meta-webos',            10, 'git://github.com/openwebos/meta-webos.git',        'commit=bb6bcc5', ''),
 ]
