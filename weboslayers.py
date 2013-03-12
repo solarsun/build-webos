@@ -61,8 +61,8 @@ Distribution = "webos"
 webos_layers = [
 ('bitbake',               -1, 'git://github.com/openembedded/bitbake.git',        'branch=1.16,commit=571d88c', ''),
 ('meta',                   5, 'git://github.com/openembedded/oe-core.git',        'branch=danny,commit=d961e42', ''),
-('meta-oe',                6, 'git://github.com/openembedded/meta-oe.git',        'branch=danny,commit=c02834a', ''),
+('meta-oe',                6, 'git://github.com/openembedded/meta-oe.git',        'branch=danny,commit=ba80b77', ''),
 ('meta-networking',        6, 'git://github.com/openembedded/meta-oe.git',        '', ''),
 
-('meta-webos',            10, 'git://github.com/openwebos/meta-webos.git',        'commit=9dea35a', ''),
+('meta-webos',            10, 'git://github.com/openwebos/meta-webos.git',        'commit=a15e3b4', ''),
 ]
