@@ -1806,7 +1806,7 @@ if test "${enable_sstatemirror+set}" = set; then :
                            echo "$URL" | grep "/PATH$" && as_fn_error $? "$URL already ends with '/PATH', remove that" "$LINENO" 5
                            echo "$URL" | grep "/$" && as_fn_error $? "$URL ends with '/', remove that" "$LINENO" 5
                            enable_sstatemirror_assignment="$enable_sstatemirror_assignment
-  file:// $URL/PATH \n \\"
+  file://.* $URL/PATH \n \\"
                          done
                          enable_sstatemirror_assignment="$enable_sstatemirror_assignment
 \""
