@@ -89,7 +89,7 @@ AC_ARG_ENABLE([sstatemirror], [AS_HELP_STRING([--enable-sstatemirror=SSTATE_MIRR
                            echo "$URL" | grep "/PATH$" && AC_MSG_ERROR([$URL already ends with '/PATH', remove that])
                            echo "$URL" | grep "/$" && AC_MSG_ERROR([$URL ends with '/', remove that])
                            enable_sstatemirror_assignment="$enable_sstatemirror_assignment
-  file:// $URL/PATH \n \\"
+  file://.* $URL/PATH \n \\"
                          done
                          enable_sstatemirror_assignment="$enable_sstatemirror_assignment
 \""
