@@ -273,14 +273,14 @@ def parseCollections (srcdir):
 def writebblayersconf(sourcedir, machine):
     f = open(os.path.join(sourcedir, "BUILD-{0}".format(machine), "conf", "bblayers.conf"), 'a')
     f.write('\n')
-    xlayer = ""
+    processed_layers = list()
     for p in PRIORITYORDER:
         for layer in LAYERSPRIORITY:
           if LAYERSPRIORITY[layer] == -1:
             continue
-          if xlayer != layer:
+          if layer not in processed_layers:
             if LAYERSPRIORITY[layer] == p:
-               xlayer = layer
+               processed_layers.append(layer)
                leftside = layer
                leftside = leftside.replace('-','_')
                leftside = leftside.upper()
@@ -296,14 +296,14 @@ def writebblayersconf(sourcedir, machine):
     f.write('BBFILES ?= ""\n')
     f.write('BBLAYERS ?= " \\')
     f.write('\n')
-    xlayer = ""
+    processed_layers = list()
     for p in PRIORITYORDER:
         for layer in LAYERSPRIORITY:
           if LAYERSPRIORITY[layer] == -1:
             continue
-          if xlayer != layer:
+          if layer not in processed_layers:
             if LAYERSPRIORITY[layer] == p:
-               xlayer = layer
+               processed_layers.append(layer)
                leftside = layer
                leftside = "{}".format(layer)
                leftside = leftside.replace('-','_')
